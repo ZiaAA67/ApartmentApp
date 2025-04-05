@@ -13,8 +13,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 /**
  *
- * @author nghia
- * Thymeleaf nhúng dữ liệu html, xml, js
+ * @author nghia Thymeleaf nhúng dữ liệu html, xml, js
  */
 @Configuration
 public class ThymeleafConfigs {
@@ -46,4 +45,5 @@ public class ThymeleafConfigs {
         viewResolver.setCharacterEncoding("UTF-8");
         return viewResolver;
     }
+
 }

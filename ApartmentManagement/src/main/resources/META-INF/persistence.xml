@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
-    <!-- Define Persistence Unit -->
-    <persistence-unit name="my_persistence_unit">
-        
-    </persistence-unit>
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="my_persistence_unit">
+    <class>com.mntn.pojo.Complaint</class>
+    <class>com.mntn.pojo.VehicleAccess</class>
+    <class>com.mntn.pojo.Delivery</class>
+    <class>com.mntn.pojo.SurveyResponse</class>
+    <class>com.mntn.pojo.Method</class>
+    <class>com.mntn.pojo.Survey</class>
+    <class>com.mntn.pojo.AccessCard</class>
+    <class>com.mntn.pojo.Category</class>
+    <class>com.mntn.pojo.ApartmentHistory</class>
+    <class>com.mntn.pojo.Apartment</class>
+    <class>com.mntn.pojo.User</class>
+    <class>com.mntn.pojo.Transaction</class>
+  </persistence-unit>
 </persistence>

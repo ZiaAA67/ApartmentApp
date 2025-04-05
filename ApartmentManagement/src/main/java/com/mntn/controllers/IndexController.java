@@ -6,6 +6,7 @@ package com.mntn.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -20,4 +21,15 @@ public class IndexController {
         model.addAttribute("message", "Quái điểu Roc!!");
         return "index";
     }
+    
+    @GetMapping("/contact")
+    public String getContactPage(){
+        return "contact";
+    }
+    
+    @GetMapping("/privacy")
+    public String getPrivacyPage(){
+        return "privacy";
+    }
+    
 }

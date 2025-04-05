@@ -22,7 +22,8 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(basePackages = {
     "com.mntn.controllers",
     "com.mntn.repositories",
-    "com.mntn.services"
+    "com.mntn.services",
+    "com.mntn.pojo"
 })
 
 public class WebAppContextConfigs implements WebMvcConfigurer {

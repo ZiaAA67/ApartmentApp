@@ -68,12 +68,18 @@
             <version>2.0.0</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
             <version>2.0.0</version>
         </dependency>
+        
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        
     </dependencies>
 
     <build>
