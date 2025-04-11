@@ -4,6 +4,9 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,21 +21,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "survey")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Survey.findAll", query = "SELECT s FROM Survey s"),
     @NamedQuery(name = "Survey.findById", query = "SELECT s FROM Survey s WHERE s.id = :id"),
@@ -45,17 +40,12 @@ public class Survey implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
     @Column(name = "title")
     private String title;
     @Lob
-    @Size(max = 65535)
     @Column(name = "content")
     private String content;
     @Column(name = "created_date")
@@ -132,7 +122,6 @@ public class Survey implements Serializable {
         this.isActive = isActive;
     }
 
-    @XmlTransient
     public Set<SurveyResponse> getSurveyResponseSet() {
         return surveyResponseSet;
     }

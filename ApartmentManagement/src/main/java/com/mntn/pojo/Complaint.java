@@ -4,6 +4,8 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.util.Date;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,19 +18,13 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "complaint")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Complaint.findAll", query = "SELECT c FROM Complaint c"),
     @NamedQuery(name = "Complaint.findById", query = "SELECT c FROM Complaint c WHERE c.id = :id"),
@@ -40,27 +36,19 @@ public class Complaint implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
     @Column(name = "title")
     private String title;
     @Basic(optional = false)
-    @NotNull
     @Lob
-    @Size(min = 1, max = 65535)
     @Column(name = "content")
     private String content;
     @Column(name = "date_submitted")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateSubmitted;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 11)
     @Column(name = "status")
     private String status;
     @JoinColumn(name = "user_id", referencedColumnName = "id")

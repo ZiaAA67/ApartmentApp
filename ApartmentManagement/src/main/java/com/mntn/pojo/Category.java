@@ -4,6 +4,8 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.util.Set;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,20 +15,13 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
-import java.util.Set;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "category")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c"),
     @NamedQuery(name = "Category.findById", query = "SELECT c FROM Category c WHERE c.id = :id"),
@@ -37,13 +32,9 @@ public class Category implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
     @Column(name = "name")
     private String name;
     @Column(name = "is_active")
@@ -87,7 +78,6 @@ public class Category implements Serializable {
         this.isActive = isActive;
     }
 
-    @XmlTransient
     public Set<Transaction> getTransactionSet() {
         return transactionSet;
     }

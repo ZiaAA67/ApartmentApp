@@ -4,6 +4,9 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Set;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,21 +18,13 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Set;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "apartment")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Apartment.findAll", query = "SELECT a FROM Apartment a"),
     @NamedQuery(name = "Apartment.findById", query = "SELECT a FROM Apartment a WHERE a.id = :id"),
@@ -46,35 +41,25 @@ public class Apartment implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "number")
     private String number;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "block")
     private String block;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "floor")
     private String floor;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
-    @NotNull
     @Column(name = "area")
     private BigDecimal area;
     @Column(name = "bathroom")
     private Integer bathroom;
     @Column(name = "bedroom")
     private Integer bedroom;
-    @Size(max = 8)
     @Column(name = "status")
     private String status;
     @Column(name = "is_active")
@@ -176,7 +161,6 @@ public class Apartment implements Serializable {
         this.isActive = isActive;
     }
 
-    @XmlTransient
     public Set<Delivery> getDeliverySet() {
         return deliverySet;
     }
@@ -185,7 +169,6 @@ public class Apartment implements Serializable {
         this.deliverySet = deliverySet;
     }
 
-    @XmlTransient
     public Set<ApartmentHistory> getApartmentHistorySet() {
         return apartmentHistorySet;
     }
@@ -202,7 +185,6 @@ public class Apartment implements Serializable {
         this.currentOwnerId = currentOwnerId;
     }
 
-    @XmlTransient
     public Set<Transaction> getTransactionSet() {
         return transactionSet;
     }

@@ -4,6 +4,11 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,21 +20,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "user")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
@@ -54,28 +51,18 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
     @Column(name = "username")
     private String username;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
     @Column(name = "password")
     private String password;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
     @Column(name = "first_name")
     private String firstName;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "gender")
@@ -84,31 +71,21 @@ public class User implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date birth;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 15)
     @Column(name = "identity_number")
     private String identityNumber;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Size(max = 50)
     @Column(name = "email")
     private String email;
-    // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "phone")
     private String phone;
-    @Size(max = 100)
     @Column(name = "address")
     private String address;
-    @Size(max = 13)
     @Column(name = "role")
     private String role;
     @Column(name = "is_first_login")
     private Boolean isFirstLogin;
     @Column(name = "is_active")
     private Boolean isActive;
-    @Size(max = 333)
     @Column(name = "avatar")
     private String avatar;
     @Column(name = "created_date")
@@ -118,20 +95,28 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @JsonIgnore
     private Set<SurveyResponse> surveyResponseSet;
     @OneToMany(mappedBy = "userId")
+    @JsonIgnore
     private Set<AccessCard> accessCardSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @JsonIgnore
     private Set<ApartmentHistory> apartmentHistorySet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @JsonIgnore
     private Set<Complaint> complaintSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @JsonIgnore
     private Set<Survey> surveySet;
     @OneToMany(mappedBy = "currentOwnerId")
+    @JsonIgnore
     private Set<Apartment> apartmentSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @JsonIgnore
     private Set<Transaction> transactionSet;
     @OneToMany(mappedBy = "userId")
+    @JsonIgnore
     private Set<VehicleAccess> vehicleAccessSet;
 
     public User() {
@@ -287,7 +272,6 @@ public class User implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    @XmlTransient
     public Set<SurveyResponse> getSurveyResponseSet() {
         return surveyResponseSet;
     }
@@ -296,7 +280,6 @@ public class User implements Serializable {
         this.surveyResponseSet = surveyResponseSet;
     }
 
-    @XmlTransient
     public Set<AccessCard> getAccessCardSet() {
         return accessCardSet;
     }
@@ -305,7 +288,6 @@ public class User implements Serializable {
         this.accessCardSet = accessCardSet;
     }
 
-    @XmlTransient
     public Set<ApartmentHistory> getApartmentHistorySet() {
         return apartmentHistorySet;
     }
@@ -314,7 +296,6 @@ public class User implements Serializable {
         this.apartmentHistorySet = apartmentHistorySet;
     }
 
-    @XmlTransient
     public Set<Complaint> getComplaintSet() {
         return complaintSet;
     }
@@ -323,7 +304,6 @@ public class User implements Serializable {
         this.complaintSet = complaintSet;
     }
 
-    @XmlTransient
     public Set<Survey> getSurveySet() {
         return surveySet;
     }
@@ -332,7 +312,6 @@ public class User implements Serializable {
         this.surveySet = surveySet;
     }
 
-    @XmlTransient
     public Set<Apartment> getApartmentSet() {
         return apartmentSet;
     }
@@ -341,7 +320,6 @@ public class User implements Serializable {
         this.apartmentSet = apartmentSet;
     }
 
-    @XmlTransient
     public Set<Transaction> getTransactionSet() {
         return transactionSet;
     }
@@ -350,7 +328,6 @@ public class User implements Serializable {
         this.transactionSet = transactionSet;
     }
 
-    @XmlTransient
     public Set<VehicleAccess> getVehicleAccessSet() {
         return vehicleAccessSet;
     }

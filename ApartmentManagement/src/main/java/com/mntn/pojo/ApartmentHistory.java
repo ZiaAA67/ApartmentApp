@@ -4,6 +4,8 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.util.Date;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,19 +18,13 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "apartment_history")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ApartmentHistory.findAll", query = "SELECT a FROM ApartmentHistory a"),
     @NamedQuery(name = "ApartmentHistory.findById", query = "SELECT a FROM ApartmentHistory a WHERE a.id = :id"),
@@ -39,20 +35,15 @@ public class ApartmentHistory implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 9)
     @Column(name = "action")
     private String action;
     @Column(name = "action_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date actionDate;
     @Lob
-    @Size(max = 65535)
     @Column(name = "notes")
     private String notes;
     @JoinColumn(name = "apartment_id", referencedColumnName = "id")

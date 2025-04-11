@@ -4,6 +4,8 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.util.Date;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,19 +17,13 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "vehicle_access")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "VehicleAccess.findAll", query = "SELECT v FROM VehicleAccess v"),
     @NamedQuery(name = "VehicleAccess.findById", query = "SELECT v FROM VehicleAccess v WHERE v.id = :id"),
@@ -45,27 +41,18 @@ public class VehicleAccess implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 9)
     @Column(name = "type")
     private String type;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
     @Column(name = "number")
     private String number;
-    @Size(max = 20)
     @Column(name = "brand")
     private String brand;
-    @Size(max = 20)
     @Column(name = "model")
     private String model;
-    @Size(max = 20)
     @Column(name = "color")
     private String color;
     @Column(name = "is_active")

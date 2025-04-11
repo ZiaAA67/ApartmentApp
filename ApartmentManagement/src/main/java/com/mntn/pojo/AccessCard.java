@@ -4,6 +4,8 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.util.Date;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,19 +17,13 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "access_card")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "AccessCard.findAll", query = "SELECT a FROM AccessCard a"),
     @NamedQuery(name = "AccessCard.findById", query = "SELECT a FROM AccessCard a WHERE a.id = :id"),
@@ -38,8 +34,6 @@ public class AccessCard implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Column(name = "is_active")

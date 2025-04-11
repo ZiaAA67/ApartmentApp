@@ -4,6 +4,8 @@
  */
 package com.mntn.pojo;
 
+import java.io.Serializable;
+import java.util.Date;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,19 +18,13 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
- * @author nghia
+ * @author macbook
  */
 @Entity
 @Table(name = "delivery")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Delivery.findAll", query = "SELECT d FROM Delivery d"),
     @NamedQuery(name = "Delivery.findById", query = "SELECT d FROM Delivery d WHERE d.id = :id"),
@@ -41,17 +37,12 @@ public class Delivery implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
     @Column(name = "recipient_name")
     private String recipientName;
     @Lob
-    @Size(max = 65535)
     @Column(name = "package_description")
     private String packageDescription;
     @Column(name = "arrived_at")
@@ -61,12 +52,9 @@ public class Delivery implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date deliveredAt;
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 9)
     @Column(name = "status")
     private String status;
     @Lob
-    @Size(max = 65535)
     @Column(name = "notes")
     private String notes;
     @JoinColumn(name = "apartment_id", referencedColumnName = "id")

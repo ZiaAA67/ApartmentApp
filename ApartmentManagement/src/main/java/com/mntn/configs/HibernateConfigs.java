@@ -23,7 +23,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
  * Quản lý kết nối db
  */
 @Configuration // Đánh dấu cấu hình cho Spring
-@PropertySource("classpath:databases.properties")// Nạp file db
+@PropertySource("classpath:database.properties")// Nạp file db
 public class HibernateConfigs {
 
     @Autowired // Tiêm Bean, giảm sự phụ thuộc
@@ -55,5 +55,12 @@ public class HibernateConfigs {
         props.put(DIALECT, env.getProperty("hibernate.dialect"));// Chỉ đĩnh loại db (MySql)
         props.put(SHOW_SQL, env.getProperty("hibernate.showSql"));
         return props;
+    }
+
+    @Bean
+    public HibernateTransactionManager transactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(getSessionFactory().getObject());
+        return transactionManager;
     }
 }

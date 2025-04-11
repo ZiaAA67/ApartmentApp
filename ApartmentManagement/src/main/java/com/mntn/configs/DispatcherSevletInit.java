@@ -4,6 +4,8 @@
  */
 package com.mntn.configs;
 
+import jakarta.servlet.MultipartConfigElement;
+import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 /**
@@ -16,7 +18,8 @@ public class DispatcherSevletInit extends AbstractAnnotationConfigDispatcherServ
     protected Class<?>[] getRootConfigClasses() {
         return new Class[]{
             ThymeleafConfigs.class,
-            HibernateConfigs.class
+            HibernateConfigs.class,
+            SpringSecurityConfigs.class
         };
     }
 
@@ -30,5 +33,17 @@ public class DispatcherSevletInit extends AbstractAnnotationConfigDispatcherServ
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/"};
+    }
+
+
+    // cấu hình nơi lưu tạm file trước khi upload lên cloudinary
+    @Override
+    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+        String location = "/tmp";
+        long maxFileSize = 5242880; // 5MB
+        long maxRequestSize = 20971520; // 20MB
+        int fileSizeThreshold = 0;
+
+        registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
     }
 }
