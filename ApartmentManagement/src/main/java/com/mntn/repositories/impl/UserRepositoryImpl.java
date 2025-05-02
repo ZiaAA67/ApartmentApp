@@ -6,8 +6,11 @@ import jakarta.persistence.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 @Transactional
@@ -15,6 +18,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
     private LocalSessionFactoryBean factory;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User getUserByUsername(String username) {
@@ -33,5 +39,18 @@ public class UserRepositoryImpl implements UserRepository {
         // flush đảm bảo dữ liệu được ghi ngay lập tức
         s.flush();
         return u;
+    }
+
+    @Override
+    public boolean authenticate(String username, String password) {
+        User u = this.getUserByUsername(username);
+        return this.passwordEncoder.matches(password, u.getPassword()) && u.getIsActive();
+    }
+
+    @Override
+    public List<User> getUsers() {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM User", User.class);
+        return q.getResultList();
     }
 }

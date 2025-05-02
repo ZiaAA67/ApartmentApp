@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,7 +59,18 @@ public class UserServiceImpl implements UserService {
         u.setIdentityNumber(params.get("identityNumber"));
         u.setPhone(params.get("phone"));
         u.setPassword(this.passswordEncoder.encode(params.get("password")));
-        u.setRole("ROLE_RESIDENT");
+        u.setIsActive(false);
+        u.setIsFirstLogin(false);
+
+        if(!params.get("email").isEmpty()) {
+            u.setEmail(params.get("email"));
+        }
+
+        if(!params.get("role").isEmpty())
+            u.setRole(params.get("role"));
+        else
+            u.setRole("ROLE_RESIDENT");
+
         if (!avatar.isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
@@ -73,6 +81,16 @@ public class UserServiceImpl implements UserService {
         }
 
         return this.userRepo.register(u);
+    }
+
+    @Override
+    public boolean authenticate(String username, String password) {
+        return this.userRepo.authenticate(username, password);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return this.userRepo.getUsers();
     }
 
 }

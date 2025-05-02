@@ -4,6 +4,8 @@
  */
 package com.mntn.configs;
 
+import com.mntn.filters.JwtFilter;
+import jakarta.servlet.Filter;
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -46,4 +48,10 @@ public class DispatcherSevletInit extends AbstractAnnotationConfigDispatcherServ
 
         registration.setMultipartConfig(new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold));
     }
+
+    // chỉ định Jwt chạy tự động --> không cần do đã cấu hình trong spring secure
+//    @Override
+//    protected Filter[] getServletFilters() {
+//        return new Filter[] {new JwtFilter()};
+//    }
 }

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -57,6 +58,7 @@ public class User implements Serializable {
     @Column(name = "username")
     private String username;
     @Basic(optional = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // ẩn khi deserialization, không hiển thị pass khi get api
     @Column(name = "password")
     private String password;
     @Basic(optional = false)
