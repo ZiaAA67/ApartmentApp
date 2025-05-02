@@ -59,8 +59,8 @@ public class UserServiceImpl implements UserService {
         u.setIdentityNumber(params.get("identityNumber"));
         u.setPhone(params.get("phone"));
         u.setPassword(this.passswordEncoder.encode(params.get("password")));
-        u.setIsActive(false);
-        u.setIsFirstLogin(false);
+        u.setIsActive(true);
+        u.setIsFirstLogin(true);
 
         if(!params.get("email").isEmpty()) {
             u.setEmail(params.get("email"));
