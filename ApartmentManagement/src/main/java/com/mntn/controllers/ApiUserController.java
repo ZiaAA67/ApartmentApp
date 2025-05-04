@@ -26,8 +26,7 @@ public class ApiUserController {
     // Đăng ký user mới
     @PostMapping(path = "/users", consumes = MediaType.MULTIPART_FORM_DATA)
     public ResponseEntity<User> register(@RequestParam Map<String, String> params,
-                                         @RequestParam(value = "avatar") MultipartFile avatar) {
-
+                                         @RequestParam(value = "avatar", required = false) MultipartFile avatar) {
         return new ResponseEntity<>(this.userDetailsService.register(params, avatar), HttpStatus.CREATED);
     }
 
@@ -45,12 +44,26 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Thông tin đăng nhập không chính xác!");
     }
 
+    // Lấy user bằng id
+    @GetMapping("/secure/users/{id}")
+    public ResponseEntity<User> retrieve(@PathVariable(value = "id") String id) {
+        return new ResponseEntity<>(this.userDetailsService.getUserById(id), HttpStatus.OK);
+    }
+
     // Lấy thông tin profile, yêu cầu phải đăng nhập
     @RequestMapping("/secure/profile")
     @ResponseBody
     @CrossOrigin
     public ResponseEntity<User> getProfile(Principal principal) {
         return new ResponseEntity<>(this.userDetailsService.getUserByUsername(principal.getName()), HttpStatus.OK);
+    }
+
+    // Update user -> gửi bằng form-data
+    @PatchMapping("/secure/users/{id}")
+    public ResponseEntity<User> update(@PathVariable(value = "id") String id,
+                                       @RequestParam Map<String, String> updates,
+                                       @RequestParam(value = "avatar", required = false) MultipartFile avatar) {
+        return new ResponseEntity<>(this.userDetailsService.updateUser(id, updates, avatar), HttpStatus.OK);
     }
 
     // Lấy thông tin tất cả users

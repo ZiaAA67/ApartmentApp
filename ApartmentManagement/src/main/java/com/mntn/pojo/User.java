@@ -21,6 +21,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import org.hibernate.annotations.CreationTimestamp;
 
 /**
  *
@@ -90,8 +91,9 @@ public class User implements Serializable {
     private Boolean isActive;
     @Column(name = "avatar")
     private String avatar;
-    @Column(name = "created_date")
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date", updatable = false)
     private Date createdDate;
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)

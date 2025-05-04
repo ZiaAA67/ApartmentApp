@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,11 +30,16 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepo;
 
     @Autowired
-    private BCryptPasswordEncoder passswordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User getUserByUsername(String username) {
         return this.userRepo.getUserByUsername(username);
+    }
+
+    @Override
+    public User getUserById(String id) {
+        return this.userRepo.getUserById(id);
     }
 
     @Override
@@ -58,20 +65,42 @@ public class UserServiceImpl implements UserService {
         u.setUsername(params.get("username"));
         u.setIdentityNumber(params.get("identityNumber"));
         u.setPhone(params.get("phone"));
-        u.setPassword(this.passswordEncoder.encode(params.get("password")));
+        u.setPassword(this.passwordEncoder.encode(params.get("password")));
         u.setIsActive(true);
         u.setIsFirstLogin(true);
 
-        if(!params.get("email").isEmpty()) {
-            u.setEmail(params.get("email"));
+        String email = params.get("email");
+        if(email != null && !email.isEmpty()) {
+            u.setEmail(email);
         }
 
-        if(!params.get("role").isEmpty())
-            u.setRole(params.get("role"));
+        String address = params.get("address");
+        if(address != null && !address.isEmpty()) {
+            u.setAddress(address);
+        }
+
+        String gender = params.get("gender");
+        if(gender != null && !gender.isEmpty()) {
+            u.setGender(Short.valueOf(gender));
+        }
+
+        String birth = params.get("birth");
+        if (birth != null && !birth.isEmpty()) {
+            try {
+                Date birthDate = new SimpleDateFormat("dd-MM-yyyy").parse(birth);
+                u.setBirth(birthDate);
+            } catch (ParseException e) {
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, "Birth format must be (dd-MM-yyyy)");
+            }
+        }
+
+        String role = params.get("role");
+        if(role != null && !role.isEmpty())
+            u.setRole(role);
         else
             u.setRole("ROLE_RESIDENT");
 
-        if (!avatar.isEmpty()) {
+        if (avatar != null && !avatar.isEmpty()) {
             try {
                 Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
                 u.setAvatar(res.get("secure_url").toString());
@@ -81,6 +110,35 @@ public class UserServiceImpl implements UserService {
         }
 
         return this.userRepo.register(u);
+    }
+
+    @Override
+    public User updateUser(String id, Map<String, String> updates, MultipartFile avatar) {
+        User u = userRepo.getUserById(id);
+
+        if (updates != null) {
+            updates.forEach((field, value) -> {
+                switch (field) {
+                    case "isActive" -> u.setIsActive(Boolean.parseBoolean(value));
+                    case "firstName" -> u.setFirstName(value);
+                    case "lastName" -> u.setLastName(value);
+                    case "email" -> u.setEmail(value);
+                    case "phone" -> u.setPhone(value);
+                    case "password" -> u.setPassword(passwordEncoder.encode(value));
+                }
+            });
+        }
+
+        if (avatar != null && !avatar.isEmpty()) {
+            try {
+                Map res = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+                u.setAvatar(res.get("secure_url").toString());
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return this.userRepo.updateUser(u);
     }
 
     @Override

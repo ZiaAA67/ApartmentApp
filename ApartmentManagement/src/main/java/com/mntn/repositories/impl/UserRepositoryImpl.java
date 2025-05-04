@@ -9,8 +9,10 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Transactional
@@ -32,12 +34,31 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User getUserById(String id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createNamedQuery("User.findById", User.class);
+        q.setParameter("id", id);
+
+        return (User) q.getSingleResult();
+    }
+
+    @Override
     public User register(User u) {
         Session s = this.factory.getObject().getCurrentSession();
         s.persist(u);
 
         // flush đảm bảo dữ liệu được ghi ngay lập tức
         s.flush();
+        return u;
+    }
+
+    @Override
+    public User updateUser(User u) {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        s.update(u);
+        s.flush();
+
         return u;
     }
 
