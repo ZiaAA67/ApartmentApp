@@ -31,7 +31,8 @@ import jakarta.persistence.TemporalType;
     @NamedQuery(name = "Transaction.findByAmount", query = "SELECT t FROM Transaction t WHERE t.amount = :amount"),
     @NamedQuery(name = "Transaction.findByCreatedDate", query = "SELECT t FROM Transaction t WHERE t.createdDate = :createdDate"),
     @NamedQuery(name = "Transaction.findByStatus", query = "SELECT t FROM Transaction t WHERE t.status = :status"),
-    @NamedQuery(name = "Transaction.findByImage", query = "SELECT t FROM Transaction t WHERE t.image = :image")})
+    @NamedQuery(name = "Transaction.findByImage", query = "SELECT t FROM Transaction t WHERE t.image = :image"),
+    @NamedQuery(name = "Transaction.findByUserIdAndStatus", query = "SELECT t FROM Transaction t WHERE t.userId = :userId AND (:status IS NULL OR t.status = :status)")})
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -171,5 +172,5 @@ public class Transaction implements Serializable {
     public String toString() {
         return "com.mntn.pojo.Transaction[ id=" + id + " ]";
     }
-    
+
 }

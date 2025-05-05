@@ -30,9 +30,9 @@ import java.util.List;
 @EnableWebSecurity
 @EnableTransactionManagement
 @ComponentScan(basePackages = {
-        "com.mntn.controllers",
-        "com.mntn.repositories",
-        "com.mntn.services"
+    "com.mntn.controllers",
+    "com.mntn.repositories",
+    "com.mntn.services"
 })
 public class SpringSecurityConfigs {
 
@@ -46,7 +46,7 @@ public class SpringSecurityConfigs {
 
     @Bean
     public HandlerMappingIntrospector
-    mvcHandlerMappingIntrospector() {
+            mvcHandlerMappingIntrospector() {
         return new HandlerMappingIntrospector();
     }
 
@@ -56,9 +56,10 @@ public class SpringSecurityConfigs {
                 .csrf(c -> c.disable())
                 .addFilterBefore(new JwtFilter((UserService) userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/secure/users").hasRole("ADMIN")
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated());
+                .requestMatchers("/api/secure/users").hasRole("ADMIN")
+                .requestMatchers("/api/**").permitAll()
+                .anyRequest().authenticated()
+                );
 //                .formLogin(form -> form.loginPage("/login")
 //                        .loginProcessingUrl("/login")
 //                        .defaultSuccessUrl("/", true)
@@ -94,10 +95,10 @@ public class SpringSecurityConfigs {
     public Cloudinary cloudinary() {
         Cloudinary cloudinary
                 = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "dbmwgavqz",
-                "api_key", "747824214758252",
-                "api_secret", "IjgCUhqhoxQhoiG1dcq-vWJk5wA",
-                "secure", true));
+                        "cloud_name", "dbmwgavqz",
+                        "api_key", "747824214758252",
+                        "api_secret", "IjgCUhqhoxQhoiG1dcq-vWJk5wA",
+                        "secure", true));
         return cloudinary;
     }
 }

@@ -47,5 +47,4 @@ public class ThymeleafConfigs {
         viewResolver.setCharacterEncoding("UTF-8");
         return viewResolver;
     }
-
 }
