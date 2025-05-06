@@ -10,11 +10,14 @@ import com.mntn.repositories.TransactionRepository;
 import com.mntn.services.TransactionService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author nghia
  */
+
+@Service("transactionService")
 public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
