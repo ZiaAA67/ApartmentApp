@@ -5,7 +5,6 @@
 package com.mntn.services.impl;
 
 import com.mntn.pojo.Transaction;
-import com.mntn.pojo.User;
 import com.mntn.repositories.TransactionRepository;
 import com.mntn.services.TransactionService;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
  *
  * @author nghia
  */
-
 @Service("transactionService")
 public class TransactionServiceImpl implements TransactionService {
 
@@ -24,8 +22,8 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionRepository transactionRepository;
 
     @Override
-    public List<Transaction> getTransactionsByUserAndStatus(User user, String status) {
-        return transactionRepository.getTransactionsByUserAndStatus(user, status);
+    public List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId) {
+        return transactionRepository.getTransactionsByUserIdStatusAndCategory(userId, status, categoryId);
     }
 
 }

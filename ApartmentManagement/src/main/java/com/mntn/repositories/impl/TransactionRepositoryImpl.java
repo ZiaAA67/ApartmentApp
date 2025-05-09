@@ -27,12 +27,14 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     private LocalSessionFactoryBean factory;
 
     @Override
-    public List<Transaction> getTransactionsByUserAndStatus(User user, String status) {
+    public List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId) {
         Session s = factory.getObject().getCurrentSession();
-        Query q = s.createNamedQuery("Transaction.findByUserIdAndStatus", Transaction.class);
-        q.setParameter("userId", user);
+        Query q = s.createNamedQuery("Transaction.findByUserIdStatusAndCategory", Transaction.class);
+        q.setParameter("userId", userId);
         q.setParameter("status", status);
+        q.setParameter("categoryId", categoryId);
 
         return q.getResultList();
     }
+
 }

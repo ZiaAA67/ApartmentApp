@@ -5,13 +5,9 @@
 package com.mntn.repositories;
 
 import com.mntn.pojo.Transaction;
-import com.mntn.pojo.User;
 import java.util.List;
 
-/**
- *
- * @author nghia
- */
 public interface TransactionRepository {
-    List<Transaction> getTransactionsByUserAndStatus(User user, String status);
+
+    List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId);
 }

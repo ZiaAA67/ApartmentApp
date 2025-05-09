@@ -13,7 +13,8 @@ import java.util.List;
  *
  * @author nghia
  */
-public interface TransactionService {
+public interface TransactionService{
 
-    List<Transaction> getTransactionsByUserAndStatus(User user, String status);
+    List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId);
+
 }
