@@ -4,6 +4,7 @@
  */
 package com.mntn.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,6 +33,7 @@ import jakarta.persistence.TemporalType;
     @NamedQuery(name = "Transaction.findByCreatedDate", query = "SELECT t FROM Transaction t WHERE t.createdDate = :createdDate"),
     @NamedQuery(name = "Transaction.findByStatus", query = "SELECT t FROM Transaction t WHERE t.status = :status"),
     @NamedQuery(name = "Transaction.findByImage", query = "SELECT t FROM Transaction t WHERE t.image = :image"),
+    @NamedQuery(name = "Transaction.findByUserId", query = "SELECT t FROM Transaction t WHERE t.userId.id = :userId"),
     @NamedQuery(name = "Transaction.findByUserIdStatusAndCategory", query = "SELECT t FROM Transaction t WHERE t.userId = :userId AND (:status IS NULL OR t.status = :status) AND (:categoryId IS NULL OR t.categoryId = :categoryId)")})
 public class Transaction implements Serializable {
 
@@ -51,15 +53,19 @@ public class Transaction implements Serializable {
     private String status;
     @Column(name = "image")
     private String image;
+    @JsonIgnore
     @JoinColumn(name = "apartment_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Apartment apartmentId;
+    @JsonIgnore
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Category categoryId;
+    @JsonIgnore
     @JoinColumn(name = "method_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Method methodId;
+    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User userId;

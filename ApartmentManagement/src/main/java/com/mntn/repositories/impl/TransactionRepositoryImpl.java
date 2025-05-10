@@ -29,4 +29,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         return q.getResultList();
     }
 
+    @Override
+    public List<Transaction> getTransactionsByUserId(String userId) {
+        Session s = factory.getObject().getCurrentSession();
+        Query q = s.createNamedQuery("Transaction.findByUserId", Transaction.class);
+        q.setParameter("userId", userId);
+
+        return q.getResultList();
+    }
+
 }
