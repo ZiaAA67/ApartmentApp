@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserRepository {
+    boolean existsByUsername(String username);
+    boolean existsByPhone(String phone);
+    boolean existsByEmail(String email);
+
     User getUserByUsername(String username);
     User getUserById(String id);
     User register(User u);

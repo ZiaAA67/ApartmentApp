@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.Collections;
@@ -25,23 +27,34 @@ public class ApiUserController {
 
     // Đăng ký user mới
     @PostMapping(path = "/users", consumes = MediaType.MULTIPART_FORM_DATA)
-    public ResponseEntity<User> register(@RequestParam Map<String, String> params,
+    public ResponseEntity<Object> register(@RequestParam Map<String, String> params,
                                          @RequestParam(value = "avatar", required = false) MultipartFile avatar) {
-        return new ResponseEntity<>(this.userDetailsService.register(params, avatar), HttpStatus.CREATED);
+//        return new ResponseEntity<>(this.userDetailsService.register(params, avatar), HttpStatus.CREATED);
+        try {
+            User registeredUser = this.userDetailsService.register(params, avatar);
+            return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getReason());
+        }
     }
 
     // Chứng thực JWT, trả về token nếu thông tin đăng nhập chính xác
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User u) {
-        if (this.userDetailsService.authenticate(u.getUsername(), u.getPassword())) {
-            try {
-                String token = JwtUtils.generateToken(u.getUsername());
-                return ResponseEntity.ok().body(Collections.singletonMap("token", token));
-            } catch (Exception e) {
-                return ResponseEntity.status(500).body("Lỗi khi tạo JWT");
+        try {
+            if (this.userDetailsService.authenticate(u.getUsername(), u.getPassword())) {
+                try {
+                    String token = JwtUtils.generateToken(u.getUsername());
+                    return ResponseEntity.ok().body(Collections.singletonMap("token", token));
+                } catch (Exception e) {
+                    return ResponseEntity.status(500).body("Lỗi khi tạo JWT");
+                }
             }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Thông tin đăng nhập không chính xác!");
+        } catch (UsernameNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Thông tin đăng nhập không chính xác!");
+
     }
 
     // Lấy user bằng id

@@ -6,6 +6,7 @@ import com.mntn.pojo.User;
 import com.mntn.repositories.UserRepository;
 import com.mntn.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -58,19 +60,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(Map<String, String> params, MultipartFile avatar) {
+        String username = params.get("username");
+        String phone = params.get("phone");
+        String email = params.get("email");
+
+        if (userRepo.existsByUsername(username)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username '" + username + "' đã tồn tại!");
+        }
+        if (userRepo.existsByPhone(phone)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number '" + phone + "' đã tồn tại!");
+        }
+        if (email != null && !email.isEmpty() && userRepo.existsByEmail(email)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email '" + email + "' đã tồn tại!");
+        }
+
         User u = new User();
         u.setId(UUID.randomUUID().toString());
         u.setFirstName(params.get("firstName"));
         u.setLastName(params.get("lastName"));
-        u.setUsername(params.get("username"));
+        u.setUsername(username);
         u.setIdentityNumber(params.get("identityNumber"));
-        u.setPhone(params.get("phone"));
+        u.setPhone(phone);
         u.setPassword(this.passwordEncoder.encode(params.get("password")));
         u.setIsActive(true);
         u.setIsFirstLogin(true);
 
-        String email = params.get("email");
-        if(email != null && !email.isEmpty()) {
+        if (email != null && !email.isEmpty()) {
             u.setEmail(email);
         }
 
