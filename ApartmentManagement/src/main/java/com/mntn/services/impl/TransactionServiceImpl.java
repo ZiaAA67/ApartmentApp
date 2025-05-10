@@ -13,9 +13,15 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    
     @Override
     public List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId) {
         return transactionRepository.getTransactionsByUserIdStatusAndCategory(userId, status, categoryId);
+    }
+
+    @Override
+    public List<Transaction> getTransactionsByUserId(String userId) {
+        return transactionRepository.getTransactionsByUserId(userId);
     }
 
 }

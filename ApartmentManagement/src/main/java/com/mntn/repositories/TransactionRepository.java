@@ -6,4 +6,6 @@ import java.util.List;
 public interface TransactionRepository {
 
     List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId);
+
+    List<Transaction> getTransactionsByUserId(String userId);
 }

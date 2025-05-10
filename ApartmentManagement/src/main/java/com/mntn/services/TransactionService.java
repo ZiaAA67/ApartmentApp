@@ -8,4 +8,5 @@ public interface TransactionService {
 
     List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId);
 
+    List<Transaction> getTransactionsByUserId(String userId);
 }
