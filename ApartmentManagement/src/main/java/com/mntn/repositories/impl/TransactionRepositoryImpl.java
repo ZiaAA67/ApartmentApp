@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mntn.repositories.impl;
 
 import com.mntn.pojo.Transaction;
@@ -15,10 +11,6 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author nghia
- */
 @Repository
 @Transactional
 public class TransactionRepositoryImpl implements TransactionRepository {

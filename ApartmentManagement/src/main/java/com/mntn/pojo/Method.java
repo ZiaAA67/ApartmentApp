@@ -4,6 +4,7 @@
  */
 package com.mntn.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Set;
 import jakarta.persistence.Basic;
@@ -39,6 +40,7 @@ public class Method implements Serializable {
     private String name;
     @Column(name = "is_active")
     private Boolean isActive;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodId")
     private Set<Transaction> transactionSet;
 
@@ -110,5 +112,5 @@ public class Method implements Serializable {
     public String toString() {
         return "com.mntn.pojo.Method[ id=" + id + " ]";
     }
-    
+
 }

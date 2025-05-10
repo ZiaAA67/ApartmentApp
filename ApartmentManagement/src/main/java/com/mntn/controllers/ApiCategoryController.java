@@ -20,5 +20,4 @@ public class ApiCategoryController {
         }
         return categoryService.getCategories(isActive);
     }
-
 }
