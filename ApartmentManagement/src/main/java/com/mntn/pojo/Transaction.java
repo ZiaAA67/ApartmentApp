@@ -5,6 +5,7 @@
 package com.mntn.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -57,11 +58,11 @@ public class Transaction implements Serializable {
     @JoinColumn(name = "apartment_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Apartment apartmentId;
-    @JsonIgnore
+    @JsonIgnoreProperties({"transactions"})
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Category categoryId;
-    @JsonIgnore
+    @JsonIgnoreProperties({"transactions"})
     @JoinColumn(name = "method_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Method methodId;

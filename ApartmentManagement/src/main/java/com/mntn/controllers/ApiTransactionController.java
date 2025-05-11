@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -23,34 +24,36 @@ public class ApiTransactionController {
     private UserService userService;
 
     @GetMapping("/transactions")
-    public ResponseEntity<List<Transaction>> getTransactionsByUserId() {
+    public ResponseEntity<List<Transaction>> getTransactions(@RequestParam Map<String, String> params) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(402).body(null);
+            return ResponseEntity.status(401).body(null);
         }
+
         String username = auth.getName();
         User user = userService.getUserByUsername(username);
-        String userId = user.getId();
+        params.put("userId", String.valueOf(user.getId()));
 
-        List<Transaction> transactions = transactionService.getTransactionsByUserId(userId);
-        return ResponseEntity.ok(transactions);
-    }
+        String fromDate = params.get("fromDate");
+        String toDate = params.get("toDate");
+        String categoryId = params.get("categoryId");
+        String methodId = params.get("methodId");
 
-    @GetMapping("/filter")
-    public ResponseEntity<List<Transaction>> getTransactionsByUserIdStatusAndCategory(
-            @RequestParam(name = "status") String status,
-            @RequestParam(name = "categoryId") String categoryId) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(402).body(null);
+        if (fromDate != null && !fromDate.isEmpty()) {
+            params.put("fromDate", fromDate);
         }
-        String username = auth.getName();
-        User user = userService.getUserByUsername(username);
-        String userId = user.getId();
+        if (toDate != null && !toDate.isEmpty()) {
+            params.put("toDate", toDate);
+        }
+        if (categoryId != null && !categoryId.isEmpty()) {
+            params.put("categoryId", categoryId);
+        }
+        if (methodId != null && !methodId.isEmpty()) {
+            params.put("methodId", methodId);
+        }
 
-        List<Transaction> transactions = transactionService.getTransactionsByUserIdStatusAndCategory(userId, status, categoryId);
+        List<Transaction> transactions = transactionService.getTransactions(params);
         return ResponseEntity.ok(transactions);
     }
 }

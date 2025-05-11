@@ -4,6 +4,7 @@ import com.mntn.pojo.Transaction;
 import com.mntn.repositories.TransactionRepository;
 import com.mntn.services.TransactionService;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +14,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    
     @Override
-    public List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId) {
-        return transactionRepository.getTransactionsByUserIdStatusAndCategory(userId, status, categoryId);
+    public List<Transaction> getTransactions(Map<String, String> params) {
+        return transactionRepository.getTransactions(params);
     }
-
-    @Override
-    public List<Transaction> getTransactionsByUserId(String userId) {
-        return transactionRepository.getTransactionsByUserId(userId);
-    }
-
 }

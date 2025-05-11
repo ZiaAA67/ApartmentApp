@@ -2,10 +2,9 @@ package com.mntn.repositories;
 
 import com.mntn.pojo.Transaction;
 import java.util.List;
+import java.util.Map;
 
 public interface TransactionRepository {
 
-    List<Transaction> getTransactionsByUserIdStatusAndCategory(String userId, String status, String categoryId);
-
-    List<Transaction> getTransactionsByUserId(String userId);
+    List<Transaction> getTransactions(Map<String, String> params);
 }
