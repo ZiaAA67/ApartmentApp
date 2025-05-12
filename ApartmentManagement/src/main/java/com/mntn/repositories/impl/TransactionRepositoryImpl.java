@@ -59,7 +59,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         }
 
         cq.where(predicates.toArray(new Predicate[0]));
-        cq.orderBy(cb.desc(root.get("createdDate")));  // Sắp xếp theo ngày tạo
+        cq.orderBy(
+                cb.desc(root.get("createdDate")),
+                cb.desc(root.get("id"))
+        );
 
         Query query = session.createQuery(cq);
 
