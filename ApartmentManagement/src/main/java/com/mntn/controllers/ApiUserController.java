@@ -29,7 +29,6 @@ public class ApiUserController {
     @PostMapping(path = "/users", consumes = MediaType.MULTIPART_FORM_DATA)
     public ResponseEntity<Object> register(@RequestParam Map<String, String> params,
                                          @RequestParam(value = "avatar", required = false) MultipartFile avatar) {
-//        return new ResponseEntity<>(this.userDetailsService.register(params, avatar), HttpStatus.CREATED);
         try {
             User registeredUser = this.userDetailsService.register(params, avatar);
             return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);

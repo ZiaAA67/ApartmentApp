@@ -336,8 +336,8 @@ public class User implements Serializable {
         return vehicleAccessSet;
     }
 
-    public void setVehicleAccessSet(Set<VehicleAccess> vehicleAccessSet) {
-        this.vehicleAccessSet = vehicleAccessSet;
+    public void setVehicleAccessSet(Set<VehicleAccess> vehicleAccess1Set) {
+        this.vehicleAccessSet = vehicleAccess1Set;
     }
 
     @Override
