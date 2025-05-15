@@ -35,7 +35,8 @@ import jakarta.persistence.TemporalType;
     @NamedQuery(name = "VehicleAccess.findByIsActive", query = "SELECT v FROM VehicleAccess v WHERE v.isActive = :isActive"),
     @NamedQuery(name = "VehicleAccess.findByIsPermanent", query = "SELECT v FROM VehicleAccess v WHERE v.isPermanent = :isPermanent"),
     @NamedQuery(name = "VehicleAccess.findByCreatedDate", query = "SELECT v FROM VehicleAccess v WHERE v.createdDate = :createdDate"),
-    @NamedQuery(name = "VehicleAccess.findByAccessTime", query = "SELECT v FROM VehicleAccess v WHERE v.accessTime = :accessTime")})
+    @NamedQuery(name = "VehicleAccess.findByAccessTime", query = "SELECT v FROM VehicleAccess v WHERE v.accessTime = :accessTime"),
+    @NamedQuery(name = "VehicleAccess.findByStatus", query = "SELECT v FROM VehicleAccess v WHERE v.status = :status")})
 public class VehicleAccess implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,6 +66,8 @@ public class VehicleAccess implements Serializable {
     @Column(name = "access_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date accessTime;
+    @Column(name = "status")
+    private String status;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private User userId;
@@ -160,6 +163,14 @@ public class VehicleAccess implements Serializable {
 
     public void setAccessTime(Date accessTime) {
         this.accessTime = accessTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public User getUserId() {
