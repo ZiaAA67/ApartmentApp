@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.mntn.utils.HmacUtils;
 import lombok.Builder;
 
-@Builder
+//@Builder
 @Service("paymentService")
 @RequiredArgsConstructor
 @Slf4j

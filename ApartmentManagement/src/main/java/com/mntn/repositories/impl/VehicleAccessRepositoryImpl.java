@@ -27,81 +27,54 @@ public class VehicleAccessRepositoryImpl implements VehicleAccessRepository {
     @Autowired
     private UserService userService;
 
-//    @Override
-//    public PaginatedResponse<VehicleAccess> getListVehicleAccess(Map<String, String> params) {
-//        Session s = this.factory.getObject().getCurrentSession();
-//
-//        CriteriaBuilder b = s.getCriteriaBuilder();
-//        CriteriaQuery<VehicleAccess> q = b.createQuery(VehicleAccess.class);
-//        Root root = q.from(VehicleAccess.class);
-//        q.select(root);
-//
-////        Join<Object, Object> userJoin = root.join("userId", JoinType.INNER);
-//        Join<VehicleAccess, User> userJoin = root.join("userId", JoinType.INNER);
-//
-//        List<Predicate> predicates = new ArrayList<>();
-//        if (params != null) {
-//            String kw = params.get("kw");
-//            if (kw != null && !kw.isEmpty()) {
-//                Predicate nameLike = b.like(
-//                        b.lower(b.concat(b.concat(userJoin.get("firstName"), " "), userJoin.get("lastName"))),
-//                        "%" + kw.toLowerCase() + "%"
-//                );
-//                predicates.add(nameLike);
-//            }
-//
-//            String status = params.get("status");
-//            if (status != null && !status.isEmpty()) {
-//                predicates.add(b.equal(root.get("status"), status));
-//            }
-//        }
-//
-//        q.orderBy(b.asc(root.get("createdDate")));
-//        q.where(predicates.toArray(Predicate[]::new));
-//
-//        Query dataQuery = s.createQuery(q);
-//
-//        int page = 1;
-//        if (params != null && params.containsKey("page")) {
-//            page = Integer.parseInt(params.get("page"));
-//            int start = (page - 1) * PAGE_SIZE;
-//            dataQuery.setMaxResults(PAGE_SIZE);
-//            dataQuery.setFirstResult(start);
-//        }
-//
-//        List<VehicleAccess> data = dataQuery.getResultList();
-//
-//        CriteriaQuery<Long> countQuery = b.createQuery(Long.class);
-//        Root countRoot = countQuery.from(VehicleAccess.class);
-//        Join<Object, Object> countUserJoin = countRoot.join("userId", JoinType.INNER);
-//        countQuery.select(b.count(countRoot));
-//
-//        if (!predicates.isEmpty()) {
-//            countQuery.where(predicates.toArray(Predicate[]::new));
-//        }
-//
-//        long totalItems = s.createQuery(countQuery).getSingleResult();
-//        int totalPages = (int) Math.ceil((double) totalItems / PAGE_SIZE);
-//
-//        return new PaginatedResponse<>(data, totalItems, totalPages, page);
-//    }
-
     @Override
     public PaginatedResponse<VehicleAccess> getListVehicleAccess(Map<String, String> params) {
-        Session s = this.factory.getObject().getCurrentSession();
-        CriteriaBuilder b = s.getCriteriaBuilder();
-        CriteriaQuery<VehicleAccess> q = b.createQuery(VehicleAccess.class);
-        Root<VehicleAccess> root = q.from(VehicleAccess.class);
-        q.select(root);
+        Session session = factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
 
+        CriteriaQuery<VehicleAccess> cq = cb.createQuery(VehicleAccess.class);
+        Root<VehicleAccess> root = cq.from(VehicleAccess.class);
+
+        List<Predicate> predicates = buildPredicates(cb, root, params);
+        if (!predicates.isEmpty()) {
+            cq.where(predicates.toArray(new Predicate[0]));
+        }
+
+        cq.orderBy(cb.asc(root.get("createdDate")));
+
+        Query dataQuery = session.createQuery(cq);
+        int page = params != null && params.containsKey("page") ? Integer.parseInt(params.get("page")) : 1;
+        int start = (page - 1) * PAGE_SIZE;
+        dataQuery.setFirstResult(start);
+        dataQuery.setMaxResults(PAGE_SIZE);
+
+        List<VehicleAccess> data = dataQuery.getResultList();
+
+        // ===== Query count =====
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        Root<VehicleAccess> countRoot = countQuery.from(VehicleAccess.class);
+
+        List<Predicate> countPredicates = buildPredicates(cb, countRoot, params);
+        if (!countPredicates.isEmpty()) {
+            countQuery.where(countPredicates.toArray(new Predicate[0]));
+        }
+        countQuery.select(cb.count(countRoot));
+
+        Long totalItems = session.createQuery(countQuery).getSingleResult();
+        int totalPages = (int) Math.ceil((double) totalItems / PAGE_SIZE);
+
+        return new PaginatedResponse<>(data, totalItems, totalPages, page);
+    }
+
+    private List<Predicate> buildPredicates(CriteriaBuilder cb, Root<VehicleAccess> root, Map<String, String> params) {
         List<Predicate> predicates = new ArrayList<>();
-        Join<VehicleAccess, User> userJoin = null;
+
         if (params != null) {
             String kw = params.get("kw");
             if (kw != null && !kw.isEmpty()) {
-                userJoin = root.join("userId", JoinType.INNER);
-                Predicate nameLike = b.like(
-                        b.lower(b.concat(b.concat(userJoin.get("firstName"), " "), userJoin.get("lastName"))),
+                Join<VehicleAccess, User> userJoin = root.join("userId", JoinType.INNER);
+                Predicate nameLike = cb.like(
+                        cb.lower(cb.concat(cb.concat(userJoin.get("firstName"), " "), userJoin.get("lastName"))),
                         "%" + kw.toLowerCase() + "%"
                 );
                 predicates.add(nameLike);
@@ -109,60 +82,12 @@ public class VehicleAccessRepositoryImpl implements VehicleAccessRepository {
 
             String status = params.get("status");
             if (status != null && !status.isEmpty()) {
-                predicates.add(b.equal(root.get("status"), status));
+                predicates.add(cb.equal(root.get("status"), status));
             }
         }
 
-        q.orderBy(b.asc(root.get("createdDate")));
-        if (!predicates.isEmpty()) {
-            q.where(predicates.toArray(Predicate[]::new));
-        }
-
-        Query dataQuery = s.createQuery(q);
-        int page = 1;
-        if (params != null && params.containsKey("page")) {
-            page = Integer.parseInt(params.get("page"));
-            int start = (page - 1) * PAGE_SIZE;
-            dataQuery.setMaxResults(PAGE_SIZE);
-            dataQuery.setFirstResult(start);
-        }
-
-        List<VehicleAccess> data = dataQuery.getResultList();
-
-        // Truy vấn đếm
-        CriteriaQuery<Long> countQuery = b.createQuery(Long.class);
-        Root<VehicleAccess> countRoot = countQuery.from(VehicleAccess.class);
-        countQuery.select(b.count(countRoot));
-
-        // Đồng bộ Join cho countQuery
-        if (!predicates.isEmpty() && userJoin != null) {
-            Join<VehicleAccess, User> countUserJoin = countRoot.join("userId", JoinType.INNER);
-            // Tạo lại Predicate cho countQuery để đảm bảo đồng bộ
-            List<Predicate> countPredicates = new ArrayList<>();
-            if (params != null) {
-                String kw = params.get("kw");
-                if (kw != null && !kw.isEmpty()) {
-                    Predicate nameLike = b.like(
-                            b.lower(b.concat(b.concat(countUserJoin.get("firstName"), " "), countUserJoin.get("lastName"))),
-                            "%" + kw.toLowerCase() + "%"
-                    );
-                    countPredicates.add(nameLike);
-                }
-
-                String status = params.get("status");
-                if (status != null && !status.isEmpty()) {
-                    countPredicates.add(b.equal(countRoot.get("status"), status));
-                }
-            }
-            countQuery.where(countPredicates.toArray(Predicate[]::new));
-        }
-
-        long totalItems = s.createQuery(countQuery).getSingleResult();
-        int totalPages = (int) Math.ceil((double) totalItems / PAGE_SIZE);
-
-        return new PaginatedResponse<>(data, totalItems, totalPages, page);
+        return predicates;
     }
-
 
     @Override
     public List<VehicleAccess> getListVehicleAccessByUserId(String userId) {
@@ -179,5 +104,24 @@ public class VehicleAccessRepositoryImpl implements VehicleAccessRepository {
         s.persist(v);
         s.flush();
         return v;
+    }
+
+    @Override
+    public VehicleAccess updateVehicleAccess(VehicleAccess v) {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        s.update(v);
+        s.flush();
+
+        return v;
+    }
+
+    @Override
+    public VehicleAccess getVehicleAccessById(String id) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createNamedQuery("VehicleAccess.findById", VehicleAccess.class);
+        q.setParameter("id", id);
+
+        return (VehicleAccess) q.getSingleResult();
     }
 }
