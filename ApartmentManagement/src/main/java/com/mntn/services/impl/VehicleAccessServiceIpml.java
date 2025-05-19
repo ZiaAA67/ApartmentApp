@@ -1,5 +1,6 @@
 package com.mntn.services.impl;
 
+import com.cloudinary.utils.ObjectUtils;
 import com.mntn.pagination.PaginatedResponse;
 import com.mntn.pojo.User;
 import com.mntn.pojo.VehicleAccess;
@@ -8,11 +9,15 @@ import com.mntn.repositories.VehicleAccessRepository;
 import com.mntn.services.VehicleAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class VehicleAccessServiceIpml implements VehicleAccessService {
@@ -82,5 +87,20 @@ public class VehicleAccessServiceIpml implements VehicleAccessService {
         return vehicleAccessRepo.addVehicleAccess(v);
     }
 
+    @Override
+    public VehicleAccess updateVehicleAccess(String id, Map<String, String> updates) {
+        VehicleAccess v = vehicleAccessRepo.getVehicleAccessById(id);
+
+        if (updates != null) {
+            updates.forEach((field, value) -> {
+                switch (field) {
+                    case "isActive" -> v.setIsActive(Boolean.parseBoolean(value));
+                    case "status" -> v.setStatus(value);
+                }
+            });
+        }
+
+        return this.vehicleAccessRepo.updateVehicleAccess(v);
+    }
 
 }

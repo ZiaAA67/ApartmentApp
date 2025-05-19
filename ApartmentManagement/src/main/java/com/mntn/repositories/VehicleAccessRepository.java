@@ -10,4 +10,6 @@ public interface VehicleAccessRepository {
     PaginatedResponse<VehicleAccess> getListVehicleAccess(Map<String, String> params);
     List<VehicleAccess> getListVehicleAccessByUserId(String userId);
     VehicleAccess addVehicleAccess(VehicleAccess v);
+    VehicleAccess updateVehicleAccess(VehicleAccess v);
+    VehicleAccess getVehicleAccessById(String id);
 }
