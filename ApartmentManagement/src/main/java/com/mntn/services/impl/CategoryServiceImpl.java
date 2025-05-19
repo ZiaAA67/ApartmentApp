@@ -15,7 +15,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getCategories(Boolean isActive) {
+        if (isActive == null) {
+            isActive = true;
+        }
         return categoryRepository.getCategories(isActive);
     }
-
 }

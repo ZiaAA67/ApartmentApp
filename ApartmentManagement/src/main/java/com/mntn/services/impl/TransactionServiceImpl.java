@@ -16,6 +16,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> getTransactions(Map<String, String> params) {
+
+        String userId = params.get("userId");
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Thiếu userId!");
+        }
+
         return transactionRepository.getTransactions(params);
     }
 }
