@@ -1,12 +1,7 @@
 package com.mntn.pojo.momo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.mntn.pojo.momo.Response;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class PaymentResponse extends Response {
 
     private String requestId;
@@ -21,4 +16,105 @@ public class PaymentResponse extends Response {
     private String partnerClientId;
     private String bindingUrl;
     private String deeplinkMiniApp;
+
+    public PaymentResponse(Integer resultCode, String message) {
+        this.resultCode = resultCode;
+        this.message = message;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    public String getPayUrl() {
+        return payUrl;
+    }
+
+    public void setPayUrl(String payUrl) {
+        this.payUrl = payUrl;
+    }
+
+    public String getShortLink() {
+        return shortLink;
+    }
+
+    public void setShortLink(String shortLink) {
+        this.shortLink = shortLink;
+    }
+
+    public String getDeeplink() {
+        return deeplink;
+    }
+
+    public void setDeeplink(String deeplink) {
+        this.deeplink = deeplink;
+    }
+
+    public String getQrCodeUrl() {
+        return qrCodeUrl;
+    }
+
+    public void setQrCodeUrl(String qrCodeUrl) {
+        this.qrCodeUrl = qrCodeUrl;
+    }
+
+    public String getDeeplinkWebInApp() {
+        return deeplinkWebInApp;
+    }
+
+    public void setDeeplinkWebInApp(String deeplinkWebInApp) {
+        this.deeplinkWebInApp = deeplinkWebInApp;
+    }
+
+    public Long getTransId() {
+        return transId;
+    }
+
+    public void setTransId(Long transId) {
+        this.transId = transId;
+    }
+
+    public String getApplink() {
+        return applink;
+    }
+
+    public void setApplink(String applink) {
+        this.applink = applink;
+    }
+
+    public String getPartnerClientId() {
+        return partnerClientId;
+    }
+
+    public void setPartnerClientId(String partnerClientId) {
+        this.partnerClientId = partnerClientId;
+    }
+
+    public String getBindingUrl() {
+        return bindingUrl;
+    }
+
+    public void setBindingUrl(String bindingUrl) {
+        this.bindingUrl = bindingUrl;
+    }
+
+    public String getDeeplinkMiniApp() {
+        return deeplinkMiniApp;
+    }
+
+    public void setDeeplinkMiniApp(String deeplinkMiniApp) {
+        this.deeplinkMiniApp = deeplinkMiniApp;
+    }
 }

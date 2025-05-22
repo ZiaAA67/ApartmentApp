@@ -7,4 +7,6 @@ import java.util.Map;
 public interface TransactionRepository {
 
     List<Transaction> getTransactions(Map<String, String> params);
+
+    Transaction getTransactionById(String transactionId);
 }

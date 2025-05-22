@@ -52,11 +52,31 @@ public class Environment {
 
             switch (target) {
                 case DEV:
-                    MoMoEndpoint devEndpoint = new MoMoEndpoint("https://payment.momo.vn/v2/gateway/api", "/create");
-                    PartnerInfo devInfo = new PartnerInfo("MOMOLRJZ20181206", "mTCKt9W3eU1m39TW", "SetA5RDnLHvt51AULf51DyauxUo3kDU6");
+                    MoMoEndpoint devEndpoint = new MoMoEndpoint(prop.getProperty("DEV_MOMO_ENDPOINT"),
+                            prop.getProperty("CREATE_URL"),
+                            prop.getProperty("REFUND_URL"),
+                            prop.getProperty("QUERY_URL"),
+                            prop.getProperty("CONFIRM_URL"),
+                            prop.getProperty("TOKEN_PAY_URL"),
+                            prop.getProperty("TOKEN_BIND_URL"),
+                            prop.getProperty("TOKEN_INQUIRY_URL"),
+                            prop.getProperty("TOKEN_DELETE_URL"));
+                    PartnerInfo devInfo = new PartnerInfo(prop.getProperty("DEV_PARTNER_CODE"), prop.getProperty("DEV_ACCESS_KEY"), prop.getProperty("DEV_SECRET_KEY"));
                     Environment dev = new Environment(devEndpoint, devInfo, target);
                     return dev;
-
+                case PROD:
+                    MoMoEndpoint prodEndpoint = new MoMoEndpoint(prop.getProperty("PROD_MOMO_ENDPOINT"),
+                            prop.getProperty("CREATE_URL"),
+                            prop.getProperty("REFUND_URL"),
+                            prop.getProperty("QUERY_URL"),
+                            prop.getProperty("CONFIRM_URL"),
+                            prop.getProperty("TOKEN_PAY_URL"),
+                            prop.getProperty("TOKEN_BIND_URL"),
+                            prop.getProperty("TOKEN_INQUIRY_URL"),
+                            prop.getProperty("TOKEN_DELETE_URL"));
+                    PartnerInfo prodInfo = new PartnerInfo(prop.getProperty("PROD_PARTNER_CODE"), prop.getProperty("PROD_ACCESS_KEY"), prop.getProperty("PROD_SECRET_KEY"));
+                    Environment prod = new Environment(prodEndpoint, prodInfo, target);
+                    return prod;
                 default:
                     throw new IllegalArgumentException("MoMo doesnt provide other environment: dev and prod");
             }

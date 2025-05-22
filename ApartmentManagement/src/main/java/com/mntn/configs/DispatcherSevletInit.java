@@ -13,7 +13,8 @@ public class DispatcherSevletInit extends AbstractAnnotationConfigDispatcherServ
         return new Class[]{
             ThymeleafConfigs.class,
             HibernateConfigs.class,
-            SpringSecurityConfigs.class,};
+            SpringSecurityConfigs.class,
+            MomoConfigs.class,};
     }
 
     @Override

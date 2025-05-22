@@ -76,4 +76,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         return query.getResultList();
     }
 
+    @Override
+    public Transaction getTransactionById(String transactionId) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Query q = session.createNamedQuery("Transaction.findById", Transaction.class);
+        q.setParameter("id", transactionId);
+        return (Transaction) q.getSingleResult();
+    }
 }
