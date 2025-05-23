@@ -49,49 +49,9 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.getTransactions(params);
     }
 
-//    @Override
-//    public PaymentResponse updateStatusTransaction(String transactionId) {
-//        if (transactionId == null || transactionId.trim().isEmpty()) {
-//            throw new IllegalArgumentException("transactionId không hợp lệ!");
-//        }
-//
-//        Transaction transaction = transactionRepository.getTransactionById(transactionId);
-//        if (transaction == null) {
-//            throw new IllegalArgumentException("Không tìm thấy giao dịch!");
-//        }
-//
-//        LogUtils.init();
-//        String requestId = String.valueOf(System.currentTimeMillis());
-//        String orderId = transactionId + "_" + System.currentTimeMillis();
-//        BigDecimal amount = transaction.getAmount();
-//        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-//            throw new IllegalArgumentException("Số tiền giao dịch không hợp lệ!");
-//        }
-//
-//        String orderInfo = "Thanh toán phí chung cư - Giao dịch " + transactionId;
-//        long amountLong = amount.setScale(0, BigDecimal.ROUND_DOWN).longValue();
-//
-//        try {
-//            // Đảm bảo sử dụng giá trị thực tế của returnUrl và notifyUrl
-//            LogUtils.info("[TransactionServiceImpl] Using returnUrl: " + returnUrl + ", notifyUrl: " + notifyUrl);
-//            PaymentResponse paymentResponse = createOrderMomo.process(
-//                    environment, orderId, requestId, String.valueOf(amountLong),
-//                    orderInfo, returnUrl, notifyUrl,
-//                    "", RequestType.CAPTURE_WALLET, Boolean.TRUE
-//            );
-//            if (paymentResponse == null) {
-//                throw new RuntimeException("MoMo API returned null response");
-//            }
-//            LogUtils.info("[TransactionServiceImpl] MoMo payUrl: " + paymentResponse.getPayUrl());
-//            // GHI CHÚ: Chưa set trạng thái giao dịch tại đây
-//            // TODO: Sau khi nhận callback từ MoMo, cập nhật trạng thái giao dịch
-//            return paymentResponse;
-//        } catch (Exception ex) {
-//            Logger.getLogger(TransactionServiceImpl.class.getName()).log(Level.SEVERE, "Gọi MoMo thất bại: " + ex.getMessage(), ex);
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Không thể tạo đơn thanh toán MoMo: " + ex.getMessage(), ex);
-//        }
     @Override
-    public PaymentResponse testMomoApi(String transactionId) throws RuntimeException {
+    public PaymentResponse payTransaction(String transactionId) throws RuntimeException {
+
         if (transactionId == null || transactionId.trim().isEmpty()) {
             throw new IllegalArgumentException("transactionId không hợp lệ!");
         }
@@ -111,8 +71,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         String returnURL = "https://google.com.vn";
         String notifyURL = "https://google.com.vn";
-        
-        String orderInfo = "Thanh toán phí chung cư - Giao dịch " + transactionId;
+
+        String orderInfo = "Giao dịch " + transaction.getCategoryId().getName();
         long amountLong = amount.setScale(0, BigDecimal.ROUND_DOWN).longValue();
         try {
             PaymentResponse paymentResponse = createOrderMomo.process(
@@ -123,7 +83,26 @@ public class TransactionServiceImpl implements TransactionService {
             return paymentResponse;
         } catch (Exception ex) {
             Logger.getLogger(TransactionServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new IllegalArgumentException("Lõi phần TransSerImpl!!");
+            throw new IllegalArgumentException("Lõi phần TransSerImpl!!" + ex.getMessage(), ex);
         }
     }
+
+    @Override
+    public List<Transaction> getTransactionsByApartmentId(String userId, String apartmentId) {
+
+        if (apartmentId == null || apartmentId.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "apartmentId không hợp lệ!");
+        }
+        try {
+            return transactionRepository.getTransactionsByApartmentId(apartmentId);
+        } catch (Exception ex) {
+            Logger.getLogger(TransactionServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Lỗi khi lấy giao dịch theo apartmentId: " + ex.getMessage(),
+                    ex
+            );
+        }
+    }
+
 }

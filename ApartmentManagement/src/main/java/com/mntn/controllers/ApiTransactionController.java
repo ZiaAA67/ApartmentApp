@@ -1,27 +1,21 @@
 package com.mntn.controllers;
 
-import com.mntn.configs.momo.Environment;
-import com.mntn.enums.RequestType;
 import com.mntn.pojo.Transaction;
 import com.mntn.pojo.User;
 import com.mntn.pojo.momo.PaymentResponse;
 import com.mntn.services.TransactionService;
 import com.mntn.services.UserService;
-import com.mntn.services.impl.CreateOrderMomo;
-import com.mntn.utils.momo.LogUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api")
 public class ApiTransactionController {
 
@@ -53,23 +47,32 @@ public class ApiTransactionController {
         }
     }
 
-    
-    // Cách test: gõ http://localhost:8080/ApartmentManagement/api/transactions/<transactionId>
-    // respone "payUrl" : "https://......" -> coppy paste and search
-    @GetMapping("/transactions/{transactionId}")
-    public ResponseEntity<?> getTrans(@PathVariable("transactionId") String transactionId) {
+    @GetMapping("/secure/transactions/{apartmentId}")
+    public ResponseEntity<?> getTransactionsByApartmentId(@RequestParam("userId") String userId, @PathVariable("apartmentId") String apartmentId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn chưa đăng nhập!");
+        }
+
+        String username = auth.getName();
+        User user = userService.getUserByUsername(username);
+        userId = user.getId();
+
+        List<Transaction> transactions = transactionService.getTransactionsByApartmentId(userId, apartmentId);
+        return ResponseEntity.ok(transactions);
+    }
+
+    @PostMapping("/secure/transactions/pay/{transactionId}")
+    public ResponseEntity<?> payTransaction(@PathVariable("transactionId") String transactionId) {
         try {
             if (transactionId == null || transactionId.trim().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("transactionId không hợp lệ!");
             }
 
-            PaymentResponse response = transactionService.testMomoApi(transactionId);
-            if (response == null || response.getPayUrl() == null || response.getPayUrl().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Không thể tạo URL thanh toán MoMo!");
-            }
+            PaymentResponse response = transactionService.payTransaction(transactionId);
 
-            return ResponseEntity.ok(new PayUrlResponse(response.getPayUrl()));
+            return ResponseEntity.ok(Map.of("payUrl", response.getPayUrl()));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lỗi: " + ex.getMessage());
         } catch (Exception ex) {
@@ -77,18 +80,4 @@ public class ApiTransactionController {
                     .body("Lỗi hệ thống: " + ex.getMessage());
         }
     }
-
-    private static class PayUrlResponse {
-
-        private final String payUrl;
-
-        public PayUrlResponse(String payUrl) {
-            this.payUrl = payUrl;
-        }
-
-        public String getPayUrl() {
-            return payUrl;
-        }
-    }
-
 }

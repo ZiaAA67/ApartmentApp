@@ -36,7 +36,10 @@ import jakarta.persistence.TemporalType;
     @NamedQuery(name = "Transaction.findByStatus", query = "SELECT t FROM Transaction t WHERE t.status = :status"),
     @NamedQuery(name = "Transaction.findByImage", query = "SELECT t FROM Transaction t WHERE t.image = :image"),
     @NamedQuery(name = "Transaction.findByUserId", query = "SELECT t FROM Transaction t WHERE t.userId.id = :userId"),
-    @NamedQuery(name = "Transaction.findByUserIdStatusAndCategory", query = "SELECT t FROM Transaction t WHERE t.userId = :userId AND (:status IS NULL OR t.status = :status) AND (:categoryId IS NULL OR t.categoryId = :categoryId)")})
+    @NamedQuery(name = "Transaction.findByUserIdStatusAndCategory", query = "SELECT t FROM Transaction t WHERE t.userId.id = :userId AND (:status IS NULL OR t.status = :status) AND (:categoryId IS NULL OR t.categoryId = :categoryId) AND (:apartmentId IS NULL OR t.apartmentId = :apartmentId)"),
+    @NamedQuery(name = "Transaction.findByApartmentId", query = "SELECT t FROM Transaction t WHERE t.apartmentId.id = :apartmentId AND (:status IS NULL OR t.status = :status)")
+})
+
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 1L;

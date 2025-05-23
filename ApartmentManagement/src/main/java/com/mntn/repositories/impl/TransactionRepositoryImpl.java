@@ -51,6 +51,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
                 predicates.add(cb.equal(root.get("methodId").get("id"), params.get("methodId")));
             }
 
+            if (params.get("apartmentId") != null && !params.get("apartmentId").isEmpty()) {
+                predicates.add(cb.equal(root.get("apartmentId").get("id"), params.get("apartmentId")));
+            }
+
             if (params.get("fromDate") != null && !params.get("fromDate").isEmpty()) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("createdDate"), java.sql.Date.valueOf(params.get("fromDate"))));
             }
@@ -82,5 +86,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         Query q = session.createNamedQuery("Transaction.findById", Transaction.class);
         q.setParameter("id", transactionId);
         return (Transaction) q.getSingleResult();
+    }
+
+    @Override
+    public List<Transaction> getTransactionsByApartmentId(String apartmentId) {
+        try {
+            Session session = this.factory.getObject().getCurrentSession();
+            Query query = session.createNamedQuery("Transaction.findByApartmentId", Transaction.class);
+            query.setParameter("apartmentId", apartmentId);
+            query.setParameter("status", null);
+            return query.getResultList();
+        } catch (Exception ex) {
+            throw new RuntimeException("Lỗi khi lấy giao dịch theo apartmentId: " + apartmentId, ex);
+        }
     }
 }

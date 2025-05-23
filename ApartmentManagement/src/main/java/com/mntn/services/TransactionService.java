@@ -9,6 +9,8 @@ public interface TransactionService {
 
     List<Transaction> getTransactions(Map<String, String> params);
 
-    // PaymentResponse updateStatusTransaction(String transactionId) throws RuntimeException;
-    PaymentResponse testMomoApi(String transactionId) throws RuntimeException;
+    List<Transaction> getTransactionsByApartmentId(String userId, String apartmentId);
+
+    PaymentResponse payTransaction(String transactionId) throws RuntimeException;
+
 }

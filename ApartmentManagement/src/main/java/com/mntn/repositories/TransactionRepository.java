@@ -8,5 +8,7 @@ public interface TransactionRepository {
 
     List<Transaction> getTransactions(Map<String, String> params);
 
+    List<Transaction> getTransactionsByApartmentId(String apartmentId);
+
     Transaction getTransactionById(String transactionId);
 }
