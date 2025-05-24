@@ -1,5 +1,6 @@
 package com.mntn.repositories;
 
+import com.mntn.pagination.PaginatedResponse;
 import com.mntn.pojo.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,5 +17,5 @@ public interface UserRepository {
     User register(User u);
     User updateUser(User u);
     boolean authenticate(String username, String password);
-    List<User> getUsers();
+    PaginatedResponse<User> getUsers(Map<String, String> params);
 }

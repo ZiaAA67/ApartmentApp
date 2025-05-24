@@ -1,5 +1,6 @@
 package com.mntn.repositories.impl;
 
+import com.mntn.pojo.User;
 import com.mntn.pojo.VehicleAccess;
 import com.mntn.repositories.StatsRepository;
 import jakarta.persistence.Query;
@@ -31,6 +32,21 @@ public class StatsRepositoryImpl implements StatsRepository {
 
         query.multiselect(root.get("status"), cb.count(root));
         query.groupBy(root.get("status"));
+
+        Query q = session.createQuery(query);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Object[]> statsActiveUsers() {
+        Session session = this.factory.getObject().getCurrentSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
+
+        Root<User> root = query.from(User.class);
+
+        query.multiselect(root.get("isActive"), cb.count(root));
+        query.groupBy(root.get("isActive"));
 
         Query q = session.createQuery(query);
         return q.getResultList();

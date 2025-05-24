@@ -7,6 +7,8 @@ package com.mntn.pojo;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -65,13 +67,16 @@ public class Apartment implements Serializable {
     @Column(name = "is_active")
     private Boolean isActive;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "apartmentId")
+    @JsonIgnore
     private Set<Delivery> deliverySet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "apartmentId")
+    @JsonIgnore
     private Set<ApartmentHistory> apartmentHistorySet;
     @JoinColumn(name = "current_owner_id", referencedColumnName = "id")
     @ManyToOne
     private User currentOwnerId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "apartmentId")
+    @JsonIgnore
     private Set<Transaction> transactionSet;
 
     public Apartment() {

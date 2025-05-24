@@ -2,6 +2,7 @@ package com.mntn.services.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.mntn.pagination.PaginatedResponse;
 import com.mntn.pojo.User;
 import com.mntn.repositories.UserRepository;
 import com.mntn.services.UserService;
@@ -124,6 +125,8 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+        u.setCreatedDate(new Date());
+
         return this.userRepo.register(u);
     }
 
@@ -162,8 +165,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers() {
-        return this.userRepo.getUsers();
+    public PaginatedResponse<User> getUsers(Map<String, String> params) {
+        return this.userRepo.getUsers(params);
     }
 
 }

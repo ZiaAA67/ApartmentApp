@@ -1,5 +1,6 @@
 package com.mntn.services;
 
+import com.mntn.pagination.PaginatedResponse;
 import com.mntn.pojo.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,5 +14,5 @@ public interface UserService extends UserDetailsService {
     User register(Map<String, String> params, MultipartFile avatar);
     User updateUser(String id, Map<String, String> updates, MultipartFile avatar);
     boolean authenticate(String username, String password);
-    List<User> getUsers();
+    PaginatedResponse<User> getUsers(Map<String, String> params);
 }

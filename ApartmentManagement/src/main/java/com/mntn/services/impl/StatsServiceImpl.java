@@ -28,4 +28,18 @@ public class StatsServiceImpl implements StatsService {
         }
         return stats;
     }
+
+    @Override
+    public List<Map<String, Object>> statsActiveUsers() {
+        List<Object[]> rawStats = statsRepo.statsActiveUsers();
+
+        List<Map<String, Object>> stats = new ArrayList<>();
+        for (Object[] row : rawStats) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("status", row[0]);
+            map.put("count", row[1]);
+            stats.add(map);
+        }
+        return stats;
+    }
 }

@@ -21,4 +21,9 @@ public class ApiStatsController {
     public ResponseEntity<List<Map<String, Object>>> getVehicleStatusStats() {
         return new ResponseEntity<>(this.statsService.statsVehicleByStatus(), HttpStatus.OK);
     }
+
+    @GetMapping("user/status")
+    public ResponseEntity<List<Map<String, Object>>> getUserStats() {
+        return new ResponseEntity<>(this.statsService.statsActiveUsers(), HttpStatus.OK);
+    }
 }

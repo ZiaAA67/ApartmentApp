@@ -5,4 +5,5 @@ import java.util.Map;
 
 public interface StatsRepository {
     List<Object[]> statsVehicleByStatus();
+    List<Object[]> statsActiveUsers();
 }

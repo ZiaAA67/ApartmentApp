@@ -1,5 +1,6 @@
 package com.mntn.controllers;
 
+import com.mntn.pagination.PaginatedResponse;
 import com.mntn.pojo.User;
 import com.mntn.services.UserService;
 import com.mntn.utils.JwtUtils;
@@ -80,7 +81,7 @@ public class ApiUserController {
 
     // Lấy thông tin tất cả users
     @GetMapping("/secure/users")
-    public ResponseEntity<List<User>> list() {
-        return new ResponseEntity<>(this.userDetailsService.getUsers(), HttpStatus.OK);
+    public ResponseEntity<PaginatedResponse<User>> list(@RequestParam Map<String, String> params) {
+        return new ResponseEntity<>(this.userDetailsService.getUsers(params), HttpStatus.OK);
     }
 }

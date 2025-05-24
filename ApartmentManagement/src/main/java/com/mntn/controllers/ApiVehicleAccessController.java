@@ -30,7 +30,7 @@ public class ApiVehicleAccessController {
         return new ResponseEntity<>(this.vehicleAccessService.getListVehicleAccessByUserId(userId), HttpStatus.OK);
     }
 
-    @PostMapping("secure/vehicle")
+    @PostMapping("/secure/vehicle")
     public ResponseEntity<Object> addVehicleAccess(@RequestBody Map<String, String> params) {
         try {
             return new ResponseEntity<>(this.vehicleAccessService.addVehicleAccess(params), HttpStatus.CREATED);
