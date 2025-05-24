@@ -15,7 +15,9 @@ public class MethodServiceImpl implements MethodService {
 
     @Override
     public List<Method> getMethod(Boolean isActive) {
+        if (isActive == null) {
+            isActive = true;
+        }
         return methodRepository.getMethod(isActive);
     }
-
 }

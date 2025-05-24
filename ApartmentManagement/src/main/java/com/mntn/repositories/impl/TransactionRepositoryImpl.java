@@ -31,39 +31,44 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         CriteriaQuery<Transaction> cq = cb.createQuery(Transaction.class);
         Root<Transaction> root = cq.from(Transaction.class);
 
-        List<Predicate> predicates = new ArrayList<>();
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
 
-        // Lọc
-        if (params.get("userId") != null) {
-            predicates.add(cb.equal(root.get("userId").get("id"), params.get("userId")));
+            // Lọc
+            if (params.get("userId") != null) {
+                predicates.add(cb.equal(root.get("userId").get("id"), params.get("userId")));
+            }
+
+            if (params.get("status") != null && !params.get("status").isEmpty()) {
+                predicates.add(cb.equal(root.get("status"), params.get("status")));
+            }
+
+            if (params.get("categoryId") != null && !params.get("categoryId").isEmpty()) {
+                predicates.add(cb.equal(root.get("categoryId").get("id"), params.get("categoryId")));
+            }
+
+            if (params.get("methodId") != null && !params.get("methodId").isEmpty()) {
+                predicates.add(cb.equal(root.get("methodId").get("id"), params.get("methodId")));
+            }
+
+            if (params.get("apartmentId") != null && !params.get("apartmentId").isEmpty()) {
+                predicates.add(cb.equal(root.get("apartmentId").get("id"), params.get("apartmentId")));
+            }
+
+            if (params.get("fromDate") != null && !params.get("fromDate").isEmpty()) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("createdDate"), java.sql.Date.valueOf(params.get("fromDate"))));
+            }
+
+            if (params.get("toDate") != null && !params.get("toDate").isEmpty()) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("createdDate"), java.sql.Date.valueOf(params.get("toDate"))));
+            }
+
+            cq.where(predicates.toArray(new Predicate[0]));
+            cq.orderBy(
+                    cb.desc(root.get("createdDate")),
+                    cb.desc(root.get("id"))
+            );
         }
-
-        if (params.get("status") != null && !params.get("status").isEmpty()) {
-            predicates.add(cb.equal(root.get("status"), params.get("status")));
-        }
-
-        if (params.get("categoryId") != null && !params.get("categoryId").isEmpty()) {
-            predicates.add(cb.equal(root.get("categoryId").get("id"), params.get("categoryId")));
-        }
-
-        if (params.get("methodId") != null && !params.get("methodId").isEmpty()) {
-            predicates.add(cb.equal(root.get("methodId").get("id"), params.get("methodId")));
-        }
-
-        if (params.get("fromDate") != null && !params.get("fromDate").isEmpty()) {
-            predicates.add(cb.greaterThanOrEqualTo(root.get("createdDate"), java.sql.Date.valueOf(params.get("fromDate"))));
-        }
-
-        if (params.get("toDate") != null && !params.get("toDate").isEmpty()) {
-            predicates.add(cb.lessThanOrEqualTo(root.get("createdDate"), java.sql.Date.valueOf(params.get("toDate"))));
-        }
-
-        cq.where(predicates.toArray(new Predicate[0]));
-        cq.orderBy(
-                cb.desc(root.get("createdDate")),
-                cb.desc(root.get("id"))
-        );
-
         Query query = session.createQuery(cq);
 
         // Phân trang
@@ -75,4 +80,24 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         return query.getResultList();
     }
 
+    @Override
+    public Transaction getTransactionById(String transactionId) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Query q = session.createNamedQuery("Transaction.findById", Transaction.class);
+        q.setParameter("id", transactionId);
+        return (Transaction) q.getSingleResult();
+    }
+
+    @Override
+    public List<Transaction> getTransactionsByApartmentId(String apartmentId) {
+        try {
+            Session session = this.factory.getObject().getCurrentSession();
+            Query query = session.createNamedQuery("Transaction.findByApartmentId", Transaction.class);
+            query.setParameter("apartmentId", apartmentId);
+            query.setParameter("status", null);
+            return query.getResultList();
+        } catch (Exception ex) {
+            throw new RuntimeException("Lỗi khi lấy giao dịch theo apartmentId: " + apartmentId, ex);
+        }
+    }
 }

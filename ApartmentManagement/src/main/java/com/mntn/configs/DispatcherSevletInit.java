@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mntn.configs;
 
 import com.mntn.filters.JwtFilter;
@@ -10,10 +6,6 @@ import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-/**
- *
- * @author nghia
- */
 public class DispatcherSevletInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
@@ -21,8 +13,8 @@ public class DispatcherSevletInit extends AbstractAnnotationConfigDispatcherServ
         return new Class[]{
             ThymeleafConfigs.class,
             HibernateConfigs.class,
-            SpringSecurityConfigs.class
-        };
+            SpringSecurityConfigs.class,
+            MomoConfigs.class,};
     }
 
     @Override
@@ -36,7 +28,6 @@ public class DispatcherSevletInit extends AbstractAnnotationConfigDispatcherServ
     protected String[] getServletMappings() {
         return new String[]{"/"};
     }
-
 
     // cấu hình nơi lưu tạm file trước khi upload lên cloudinary
     @Override

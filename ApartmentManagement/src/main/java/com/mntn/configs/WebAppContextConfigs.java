@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mntn.configs;
 
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,18 +12,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- *
- * @author nghia
- */
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan(basePackages = {
     "com.mntn.controllers",
     "com.mntn.repositories",
-    "com.mntn.services",
-})
+    "com.mntn.services",})
 
 public class WebAppContextConfigs implements WebMvcConfigurer {
 
@@ -51,7 +43,7 @@ public class WebAppContextConfigs implements WebMvcConfigurer {
     public StandardServletMultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
-    
+
 //    @Bean
 //    public InternalResourceViewResolver internalResourceViewResolver(){
 //        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
