@@ -2,7 +2,6 @@
 -- Generation Time: 30-3-2025 at 21:21
 -- Author: Mink Nhat, Nghia Le
 
-
 CREATE DATABASE IF NOT EXISTS `apartmentdb`;
 USE `apartmentdb`;
 
@@ -76,13 +75,15 @@ CREATE TABLE IF NOT EXISTS `method`(
 -- Bảng lưu thông tin thanh toán
 CREATE TABLE IF NOT EXISTS `transaction` (
 `id` char(36) PRIMARY KEY DEFAULT (UUID()),
-`user_id` char(36) NOT NULL, -- Người giao dịch
+`user_id` char(36) NULL, -- Người giao dịch
 `apartment_id` char(36) NOT NULL,
 `category_id` char(36) NOT NULL, -- Loại dịch vụ thanh toán
-`method_id` char(36) NOT NULL, -- Phương thúc thanh toán
+`method_id` char(36), -- Phương thúc thanh toán
 `amount` DECIMAL(10,2) NOT NULL, -- Số tiền thanh toán
 `created_date` datetime default CURRENT_TIMESTAMP, -- Ngày tạo lấy thời gian hiện tại
-`status` ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+`due_date` datetime, -- Ngày đáo hạn thanh toán
+`updated_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Ngày cập nhật
+`status` ENUM('unpaid', 'pending', 'completed', 'failed') DEFAULT 'unpaid',
 `image` varchar(333), -- Upload màn hình ủy nhiệm
 -- Để phục vụ thống kê sau này, không được xoá mà chỉ unactive
 -- vì user có thể có nhiều căn hộ, nên cần chỉ rõ user thanh toán cho căn hộ nào 
