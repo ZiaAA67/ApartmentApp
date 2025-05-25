@@ -17,6 +17,8 @@ public interface TransactionService {
 
     List<Transaction> createTransactions(List<TransactionDTO> dataList);
 
-    Transaction updateTransaction(String id, Map<String, String> updates, MultipartFile momoImage);
+    Transaction updateTransactionImage(String transactionId, Map<String, String> updates, MultipartFile momoImage);
+
+    Transaction processMomoIPN(Map<String, String> payload);
 
 }

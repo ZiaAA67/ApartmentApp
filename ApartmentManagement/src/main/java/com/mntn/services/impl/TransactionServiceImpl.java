@@ -48,6 +48,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.getTransactions(params);
     }
 
+    // Xử lí thanh toán momo
     @Override
     public PaymentResponse payTransaction(String transactionId) throws RuntimeException {
 
@@ -68,16 +69,16 @@ public class TransactionServiceImpl implements TransactionService {
             throw new IllegalArgumentException("Số tiền giao dịch không hợp lệ!");
         }
 
-        String returnURL = "https://google.com.vn";
-        String notifyURL = "https://google.com.vn";
-
+        String returnURL = "http://localhost:3000/pay-transactions";
+        String notifyURL = "http://localhost:8080/ApartmentManagement/api/momo/callback";
         String orderInfo = "Giao dịch " + transaction.getCategoryId().getName();
+        
         long amountLong = amount.setScale(0, BigDecimal.ROUND_DOWN).longValue();
         try {
             PaymentResponse paymentResponse = createOrderMomo.process(
                     environment, orderId, requestId, String.valueOf(amountLong),
                     orderInfo, returnURL, notifyURL,
-                    "", RequestType.CAPTURE_WALLET, Boolean.TRUE
+                    "", RequestType.PAY_WITH_ATM, Boolean.TRUE
             );
             return paymentResponse;
         } catch (Exception ex) {
@@ -92,6 +93,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private CategoryRepository categoryRepo;
 
+    // Tạo các transactions
     @Override
     public List<Transaction> createTransactions(List<TransactionDTO> dataList) {
         List<Transaction> result = new ArrayList<>();
@@ -122,26 +124,25 @@ public class TransactionServiceImpl implements TransactionService {
         return result;
     }
 
+    // Lấy các transaction
     @Override
     public List<Transaction> getTransactionsByAdmin(Map<String, String> params) {
         return transactionRepository.getTransactions(params);
     }
+
     @Autowired
     private Cloudinary cloudinary;
 
+    // Cập nhập transaction khi nạp momo img
     @Override
-    public Transaction updateTransaction(String id, Map<String, String> updates, MultipartFile momoImage) {
-        Transaction t = transactionRepository.getTransactionById(id);
+    public Transaction updateTransactionImage(String transactionId, Map<String, String> updates, MultipartFile momoImage) {
+        if (transactionId == null) {
+            throw new IllegalArgumentException("Trans Id null!");
+        }
 
-        if (updates != null) {
-            updates.forEach((key, value) -> {
-                switch (key) {
-                    case "status" ->
-                        t.setStatus("completed");
-                    case "paymentDate" ->
-                        t.setUpdatedDate(new Date());
-                }
-            });
+        Transaction t = transactionRepository.getTransactionById(transactionId);
+        if (t == null) {
+            throw new IllegalArgumentException("Không tìm thấy transaction với ID: " + transactionId);
         }
 
         if (momoImage != null && !momoImage.isEmpty()) {
@@ -151,11 +152,39 @@ public class TransactionServiceImpl implements TransactionService {
                 t.setImage(res.get("secure_url").toString());
                 t.setUpdatedDate(new Date());
                 t.setStatus("pending");
+
+                return transactionRepository.updateTransaction(t);
             } catch (IOException ex) {
                 Logger.getLogger(TransactionServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException("Upload ảnh thất bại: " + ex.getMessage());
             }
+        } else {
+            throw new IllegalArgumentException("Ảnh momoImage bị thiếu!");
+        }
+    }
+
+    @Override
+    public Transaction processMomoIPN(Map<String, String> payload
+    ) {
+        String orderId = payload.get("orderId");
+        String resultCode = payload.get("resultCode");
+        String transId = orderId.split("_")[0];
+
+        if (orderId == null || resultCode == null) {
+            throw new IllegalArgumentException("IPN không hợp lệ");
         }
 
-        return transactionRepository.updateTransaction(t);
+        if ("0".equals(resultCode)) {
+            Transaction t = transactionRepository.getTransactionById(transId);
+            if (t == null) {
+                throw new IllegalArgumentException("Không tìm thấy transaction");
+            }
+            t.setStatus("completed");
+            t.setUpdatedDate(new Date());
+
+            return transactionRepository.updateTransaction(t);
+        }
+
+        return null;
     }
 }

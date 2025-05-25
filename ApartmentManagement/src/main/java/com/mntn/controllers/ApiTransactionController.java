@@ -50,7 +50,21 @@ public class ApiTransactionController {
         }
     }
 
-    // https://developers.momo.vn/v3/vi/download/ Link app test QR CODE MOMO
+    // Lấy unpaid
+    @GetMapping("/secure/admin/transactions")
+    public ResponseEntity<?> getTransactionsByAdmin(@RequestParam Map<String, String> params) {
+        try {
+            List<Transaction> transactions = transactionService.getTransactionsByAdmin(params);
+            return ResponseEntity.ok(transactions);
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi hệ thống: " + ex.getMessage());
+        }
+    }
+
+    // Thanh toán
+    // https://developers.momo.vn/v3/vi/docs/payment/onboarding/test-instructions/ Link app test QR CODE MOMO
     @PostMapping("/secure/transactions/pay/{transactionId}")
     public ResponseEntity<?> payTransaction(@PathVariable("transactionId") String transactionId) {
         try {
@@ -64,6 +78,7 @@ public class ApiTransactionController {
         }
     }
 
+    // Tạo transaction
     @PostMapping("/secure/transactions/create-multiple")
     public ResponseEntity<?> createMultipleTransactions(@RequestBody List<TransactionDTO> data) {
         try {
@@ -74,22 +89,30 @@ public class ApiTransactionController {
         }
     }
 
-    @GetMapping("/secure/admin/transactions")
-    public ResponseEntity<?> getTransactionsByAdmin(@RequestParam Map<String, String> params) {
+    // Xử lí upload img momo - update trans
+    @PatchMapping(path = "/secure/pay-img/transactions/{transactionId}", consumes = MediaType.MULTIPART_FORM_DATA)
+    public ResponseEntity<?> updateTransaction(@PathVariable("transactionId") String transactionId,
+            @RequestParam Map<String, String> updates,
+            @RequestParam(value = "momoImage", required = false) MultipartFile momoImage) {
         try {
-            List<Transaction> transactions = transactionService.getTransactionsByAdmin(params);
-            return ResponseEntity.ok(transactions);
-        } catch (Exception ex) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi hệ thống: " + ex.getMessage());
+            Transaction updated = transactionService.updateTransactionImage(transactionId, updates, momoImage);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi server");
         }
     }
 
-    @PatchMapping(path = "/secure/transactions/{id}", consumes = MediaType.MULTIPART_FORM_DATA)
-    public ResponseEntity<Transaction> updateTransaction(@PathVariable String id,
-            @RequestParam Map<String, String> updates,
-            @RequestParam(value = "momoImage", required = false) MultipartFile momoImage) {
-        return new ResponseEntity<>(transactionService.updateTransaction(id, updates, momoImage), HttpStatus.OK);
+    // Nhận notify từ MoMo (IPN) - update trans status
+    @PostMapping("/momo/callback")
+    public ResponseEntity<?> momoCallback(@RequestBody Map<String, String> payload) {
+        System.out.println("===> MoMo IPN received: " + payload);
+        try {
+            transactionService.processMomoIPN(payload);
+            return ResponseEntity.ok("IPN received");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi xử lý IPN: " + ex.getMessage());
+        }
     }
 }

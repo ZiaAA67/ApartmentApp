@@ -13,8 +13,11 @@ public enum ConfirmRequestType {
      * The pay with atm
      */
     @SerializedName("cancel")
-    CANCEL("cancel");
+    CANCEL("cancel"),
 
+    @SerializedName("captureWallet")
+    CAPTURE_WALLET("captureWallet");
+    
     private final String value;
 
     ConfirmRequestType(String value) {
