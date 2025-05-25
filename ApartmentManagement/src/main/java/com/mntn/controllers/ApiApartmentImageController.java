@@ -17,8 +17,8 @@ public class ApiApartmentImageController {
     @Autowired
     private ApartmentImageService imageService;
 
-    @PostMapping(path = "/image", consumes = MediaType.MULTIPART_FORM_DATA)
-    public ResponseEntity<Object> addImage(@RequestParam(value = "apartment_id") String aptId,
+    @PostMapping(path = "/secure/apartment/{aptId}/images", consumes = MediaType.MULTIPART_FORM_DATA)
+    public ResponseEntity<Object> addImage(@PathVariable(value = "aptId") String aptId,
                                            @RequestParam(value = "image") MultipartFile image) {
         try {
             return new ResponseEntity<>(this.imageService.addImage(aptId, image), HttpStatus.CREATED);
@@ -27,7 +27,7 @@ public class ApiApartmentImageController {
         }
     }
 
-    @GetMapping("/secure/image/{aptId}")
+    @GetMapping("/secure/apartment/{aptId}/images")
     public ResponseEntity<List<ApartmentImage>> getListVehicleAccess(@PathVariable(value = "aptId") String aptId) {
         return new ResponseEntity<>(this.imageService.getListImages(aptId), HttpStatus.OK);
     }

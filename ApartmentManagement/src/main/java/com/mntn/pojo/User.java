@@ -98,9 +98,6 @@ public class User implements Serializable {
     @Column(name = "updated_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
-    @JsonIgnore
-    private Set<SurveyResponse> surveyResponseSet;
     @OneToMany(mappedBy = "userId")
     @JsonIgnore
     private Set<AccessCard> accessCardSet;
@@ -110,9 +107,6 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     @JsonIgnore
     private Set<Complaint> complaintSet;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
-    @JsonIgnore
-    private Set<Survey> surveySet;
     @OneToMany(mappedBy = "currentOwnerId")
     @JsonIgnore
     private Set<Apartment> apartmentSet;
@@ -122,6 +116,12 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "userId")
     @JsonIgnore
     private Set<VehicleAccess> vehicleAccessSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @JsonIgnore
+    private Set<SurveyResponse> surveyResponseSet;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    @JsonIgnore
+    private Set<Survey> surveySet;
 
     public User() {
     }
@@ -276,14 +276,6 @@ public class User implements Serializable {
         this.updatedDate = updatedDate;
     }
 
-    public Set<SurveyResponse> getSurveyResponseSet() {
-        return surveyResponseSet;
-    }
-
-    public void setSurveyResponseSet(Set<SurveyResponse> surveyResponseSet) {
-        this.surveyResponseSet = surveyResponseSet;
-    }
-
     public Set<AccessCard> getAccessCardSet() {
         return accessCardSet;
     }
@@ -308,14 +300,6 @@ public class User implements Serializable {
         this.complaintSet = complaintSet;
     }
 
-    public Set<Survey> getSurveySet() {
-        return surveySet;
-    }
-
-    public void setSurveySet(Set<Survey> surveySet) {
-        this.surveySet = surveySet;
-    }
-
     public Set<Apartment> getApartmentSet() {
         return apartmentSet;
     }
@@ -338,6 +322,22 @@ public class User implements Serializable {
 
     public void setVehicleAccessSet(Set<VehicleAccess> vehicleAccess1Set) {
         this.vehicleAccessSet = vehicleAccess1Set;
+    }
+    
+    public Set<SurveyResponse> getSurveyResponseSet() {
+        return surveyResponseSet;
+    }
+
+    public void setSurveyResponseSet(Set<SurveyResponse> surveyResponseSet) {
+        this.surveyResponseSet = surveyResponseSet;
+    }
+
+    public Set<Survey> getSurveySet() {
+        return surveySet;
+    }
+
+    public void setSurveySet(Set<Survey> surveySet) {
+        this.surveySet = surveySet;
     }
 
     @Override

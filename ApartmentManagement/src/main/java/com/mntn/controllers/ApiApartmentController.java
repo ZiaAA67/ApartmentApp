@@ -23,7 +23,7 @@ public class ApiApartmentController {
         return new ResponseEntity<>(this.aptService.getListApartmentByBlock(block), HttpStatus.OK);
     }
 
-    @GetMapping("/secure/apartment/user/{userId}")
+    @GetMapping("/secure/user/{userId}/apartment")
     public ResponseEntity<List<Apartment>> getListApartmentByUserId(@PathVariable(value = "userId") String userId) {
         return new ResponseEntity<>(this.aptService.getListApartmentByUserId(userId), HttpStatus.OK);
     }

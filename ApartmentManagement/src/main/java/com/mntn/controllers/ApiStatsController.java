@@ -17,12 +17,12 @@ public class ApiStatsController {
     @Autowired
     private StatsService statsService;
 
-    @GetMapping("vehicle/status")
+    @GetMapping("/vehicle/status")
     public ResponseEntity<List<Map<String, Object>>> getVehicleStatusStats() {
         return new ResponseEntity<>(this.statsService.statsVehicleByStatus(), HttpStatus.OK);
     }
 
-    @GetMapping("user/status")
+    @GetMapping("/users/status")
     public ResponseEntity<List<Map<String, Object>>> getUserStats() {
         return new ResponseEntity<>(this.statsService.statsActiveUsers(), HttpStatus.OK);
     }

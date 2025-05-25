@@ -7,20 +7,9 @@ package com.mntn.pojo;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
-import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 /**
  *
@@ -33,7 +22,6 @@ import jakarta.persistence.TemporalType;
     @NamedQuery(name = "Survey.findById", query = "SELECT s FROM Survey s WHERE s.id = :id"),
     @NamedQuery(name = "Survey.findByTitle", query = "SELECT s FROM Survey s WHERE s.title = :title"),
     @NamedQuery(name = "Survey.findByCreatedDate", query = "SELECT s FROM Survey s WHERE s.createdDate = :createdDate"),
-    @NamedQuery(name = "Survey.findByUpdatedDate", query = "SELECT s FROM Survey s WHERE s.updatedDate = :updatedDate"),
     @NamedQuery(name = "Survey.findByIsActive", query = "SELECT s FROM Survey s WHERE s.isActive = :isActive")})
 public class Survey implements Serializable {
 
@@ -46,21 +34,24 @@ public class Survey implements Serializable {
     @Column(name = "title")
     private String title;
     @Lob
-    @Column(name = "content")
-    private String content;
+    @Column(name = "description")
+    private String description;
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
-    @Column(name = "updated_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedDate;
     @Column(name = "is_active")
     private Boolean isActive;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyId")
-    private Set<SurveyResponse> surveyResponseSet;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User userId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyId")
+    @JsonIgnore
+    private Set<SurveyResponse> surveyResponseSet;
+    @OneToMany(mappedBy="surveyId", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+//    @JsonIgnore
+    private Set<SurveyOption> surveyOptionSet;
+    @Transient
+    private int totalVotes;
 
     public Survey() {
     }
@@ -90,12 +81,12 @@ public class Survey implements Serializable {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
+    public String getDescription() {
+        return description;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreatedDate() {
@@ -106,20 +97,12 @@ public class Survey implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    public Boolean getIsActive() {
+    public Boolean getActive() {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     public Set<SurveyResponse> getSurveyResponseSet() {
@@ -136,6 +119,22 @@ public class Survey implements Serializable {
 
     public void setUserId(User userId) {
         this.userId = userId;
+    }
+
+    public int getTotalVotes() {
+        return totalVotes;
+    }
+
+    public void setTotalVotes(int totalVotes) {
+        this.totalVotes = totalVotes;
+    }
+
+    public Set<SurveyOption> getSurveyOptionSet() {
+        return surveyOptionSet;
+    }
+
+    public void setSurveyOptionSet(Set<SurveyOption> surveyOptionSet) {
+        this.surveyOptionSet = surveyOptionSet;
     }
 
     @Override

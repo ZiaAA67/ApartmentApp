@@ -11,7 +11,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -36,16 +35,13 @@ public class SurveyResponse implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private String id;
-    @Basic(optional = false)
-    @Lob
-    @Column(name = "response")
-    private String response;
     @Column(name = "submitted_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date submittedDate;
-    @JoinColumn(name = "survey_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Survey surveyId;
+    @Column(name = "survey_id")
+    private String surveyId;
+    @Column(name = "option_id")
+    private String optionId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User userId;
@@ -57,25 +53,12 @@ public class SurveyResponse implements Serializable {
         this.id = id;
     }
 
-    public SurveyResponse(String id, String response) {
-        this.id = id;
-        this.response = response;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
     }
 
     public Date getSubmittedDate() {
@@ -86,12 +69,20 @@ public class SurveyResponse implements Serializable {
         this.submittedDate = submittedDate;
     }
 
-    public Survey getSurveyId() {
+    public String getSurveyId() {
         return surveyId;
     }
 
-    public void setSurveyId(Survey surveyId) {
+    public void setSurveyId(String surveyId) {
         this.surveyId = surveyId;
+    }
+
+    public String getOptionId() {
+        return optionId;
+    }
+
+    public void setOptionId(String optionId) {
+        this.optionId = optionId;
     }
 
     public User getUserId() {
