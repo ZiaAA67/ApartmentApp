@@ -20,4 +20,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return categoryRepository.getCategories(isActive);
     }
+
+    @Override
+    public Category getCateById(String id) {
+        return categoryRepository.findById(id);
+    }
 }

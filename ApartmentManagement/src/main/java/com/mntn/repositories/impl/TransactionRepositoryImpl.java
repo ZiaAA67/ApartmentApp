@@ -89,15 +89,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public List<Transaction> getTransactionsByApartmentId(String apartmentId) {
-        try {
-            Session session = this.factory.getObject().getCurrentSession();
-            Query query = session.createNamedQuery("Transaction.findByApartmentId", Transaction.class);
-            query.setParameter("apartmentId", apartmentId);
-            query.setParameter("status", null);
-            return query.getResultList();
-        } catch (Exception ex) {
-            throw new RuntimeException("Lỗi khi lấy giao dịch theo apartmentId: " + apartmentId, ex);
-        }
+    public Transaction updateTransaction(Transaction t) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.update(t);
+        s.flush();
+        return t;
+    }
+
+    @Override
+    public Transaction addTransaction(Transaction t) {
+        Session s = this.factory.getObject().getCurrentSession();
+        s.persist(t);
+        s.flush();
+        return t;
     }
 }

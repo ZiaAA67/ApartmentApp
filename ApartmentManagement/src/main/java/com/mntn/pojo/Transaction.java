@@ -7,9 +7,6 @@ package com.mntn.pojo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,10 +18,15 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  *
- * @author macbook
+ * @author nghia
  */
 @Entity
 @Table(name = "transaction")
@@ -33,47 +35,55 @@ import jakarta.persistence.TemporalType;
     @NamedQuery(name = "Transaction.findById", query = "SELECT t FROM Transaction t WHERE t.id = :id"),
     @NamedQuery(name = "Transaction.findByAmount", query = "SELECT t FROM Transaction t WHERE t.amount = :amount"),
     @NamedQuery(name = "Transaction.findByCreatedDate", query = "SELECT t FROM Transaction t WHERE t.createdDate = :createdDate"),
+    @NamedQuery(name = "Transaction.findByDueDate", query = "SELECT t FROM Transaction t WHERE t.dueDate = :dueDate"),
+    @NamedQuery(name = "Transaction.findByUpdatedDate", query = "SELECT t FROM Transaction t WHERE t.updatedDate = :updatedDate"),
     @NamedQuery(name = "Transaction.findByStatus", query = "SELECT t FROM Transaction t WHERE t.status = :status"),
-    @NamedQuery(name = "Transaction.findByImage", query = "SELECT t FROM Transaction t WHERE t.image = :image"),
-    @NamedQuery(name = "Transaction.findByUserId", query = "SELECT t FROM Transaction t WHERE t.userId.id = :userId"),
-    @NamedQuery(name = "Transaction.findByUserIdStatusAndCategory", query = "SELECT t FROM Transaction t WHERE t.userId.id = :userId AND (:status IS NULL OR t.status = :status) AND (:categoryId IS NULL OR t.categoryId = :categoryId) AND (:apartmentId IS NULL OR t.apartmentId = :apartmentId)"),
-    @NamedQuery(name = "Transaction.findByApartmentId", query = "SELECT t FROM Transaction t WHERE t.apartmentId.id = :apartmentId AND (:status IS NULL OR t.status = :status)")
-})
-
+    @NamedQuery(name = "Transaction.findByImage", query = "SELECT t FROM Transaction t WHERE t.image = :image")})
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 36)
     @Column(name = "id")
     private String id;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
+    @NotNull
     @Column(name = "amount")
     private BigDecimal amount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name = "created_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @Column(name = "due_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dueDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @Column(name = "updated_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedDate;
+    @Size(max = 9)
     @Column(name = "status")
     private String status;
+    @Size(max = 333)
     @Column(name = "image")
     private String image;
-    @JsonIgnore
     @JoinColumn(name = "apartment_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Apartment apartmentId;
     @JsonIgnoreProperties({"transactions"})
     @JoinColumn(name = "category_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Category categoryId;
     @JsonIgnoreProperties({"transactions"})
     @JoinColumn(name = "method_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Method methodId;
-    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private User userId;
 
     public Transaction() {
@@ -110,6 +120,22 @@ public class Transaction implements Serializable {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
     public String getStatus() {
