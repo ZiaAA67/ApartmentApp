@@ -44,9 +44,8 @@ public class ApiTransactionController {
             List<Transaction> transactions = transactionService.getTransactions(params);
             return ResponseEntity.ok(transactions);
         } catch (Exception ex) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi hệ thống: " + ex.getMessage());
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
         }
     }
 
@@ -57,9 +56,8 @@ public class ApiTransactionController {
             List<Transaction> transactions = transactionService.getTransactionsByAdmin(params);
             return ResponseEntity.ok(transactions);
         } catch (Exception ex) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi hệ thống: " + ex.getMessage());
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
         }
     }
 
@@ -70,11 +68,9 @@ public class ApiTransactionController {
         try {
             PaymentResponse response = transactionService.payTransaction(transactionId);
             return ResponseEntity.ok(Map.of("payUrl", response.getPayUrl()));
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lỗi: " + ex.getMessage());
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi hệ thống: " + ex.getMessage());
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
         }
     }
 
@@ -85,7 +81,8 @@ public class ApiTransactionController {
             List<Transaction> created = transactionService.createTransactions(data);
             return ResponseEntity.ok(created);
         } catch (Exception ex) {
-            return ResponseEntity.status(500).body("Lỗi hệ thống: " + ex.getMessage());
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
         }
     }
 
@@ -97,22 +94,30 @@ public class ApiTransactionController {
         try {
             Transaction updated = transactionService.updateTransactionImage(transactionId, updates, momoImage);
             return ResponseEntity.ok(updated);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi server");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
         }
     }
 
     // Nhận notify từ MoMo (IPN) - update trans status
     @PostMapping("/momo/callback")
     public ResponseEntity<?> momoCallback(@RequestBody Map<String, String> payload) {
-        System.out.println("===> MoMo IPN received: " + payload);
         try {
-            transactionService.processMomoIPN(payload);
-            return ResponseEntity.ok("IPN received");
+            return ResponseEntity.ok(transactionService.processMomoIPN(payload));
         } catch (Exception ex) {
             ex.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi xử lý IPN: " + ex.getMessage());
+            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
+        }
+    }
+
+    @PatchMapping("/secure/transactions/update-status/{transactionId}")
+    public ResponseEntity<?> updateStatusTransaction(@PathVariable("transactionId") String transactionId) {
+        try {
+            return ResponseEntity.ok(transactionService.updateTransactionStatus(transactionId));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
         }
     }
 }
