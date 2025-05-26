@@ -112,9 +112,32 @@ public class ApiTransactionController {
     }
 
     @PatchMapping("/secure/transactions/update-status/{transactionId}")
-    public ResponseEntity<?> updateStatusTransaction(@PathVariable("transactionId") String transactionId) {
+    public ResponseEntity<?> updateStatusTransaction(@PathVariable("transactionId") String transactionId,
+            @RequestParam("status") String status) {
         try {
-            return ResponseEntity.ok(transactionService.updateTransactionStatus(transactionId));
+            return ResponseEntity.ok(transactionService.updateTransactionStatus(transactionId, status));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
+        }
+    }
+
+    @GetMapping("/secure/transactions-by-apartment/{apartmentId}")
+    public ResponseEntity<?> getTransactionsByApartment(@PathVariable("apartmentId") String apartmentId,
+            @RequestParam Map<String, String> params) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn chưa đăng nhập!");
+        }
+
+        String username = auth.getName();
+        User user = userService.getUserByUsername(username);
+        params.put("userId", String.valueOf(user.getId()));
+
+        try {
+            List<Transaction> transactions = transactionService.getTransactionsByApartment(apartmentId, params);
+            return ResponseEntity.ok(transactions);
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());

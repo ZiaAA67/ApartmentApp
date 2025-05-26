@@ -8,24 +8,29 @@ import com.mntn.enums.RequestType;
 import com.mntn.pojo.Apartment;
 import com.mntn.pojo.Category;
 import com.mntn.pojo.Transaction;
+import com.mntn.pojo.User;
 import com.mntn.pojo.momo.PaymentResponse;
 import com.mntn.repositories.ApartmentRepository;
 import com.mntn.repositories.CategoryRepository;
 import com.mntn.repositories.TransactionRepository;
+import com.mntn.repositories.UserRepository;
 import com.mntn.services.TransactionService;
 import com.mntn.utils.momo.LogUtils;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service("transactionService")
@@ -39,15 +44,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private Environment environment;
-
-    @Override
-    public List<Transaction> getTransactions(Map<String, String> params) {
-        String userId = params.get("userId");
-        if (userId == null || userId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Thiếu userId!");
-        }
-        return transactionRepository.getTransactions(params);
-    }
 
     // Xử lí thanh toán momo
     @Override
@@ -94,6 +90,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private CategoryRepository categoryRepo;
 
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime due = now.plusMonths(1);
+
     // Tạo các transactions
     @Override
     public List<Transaction> createTransactions(List<TransactionDTO> dataList) {
@@ -112,6 +111,7 @@ public class TransactionServiceImpl implements TransactionService {
                 t.setId(UUID.randomUUID().toString());
                 t.setAmount(amount);
                 t.setCreatedDate(new Date());
+                t.setDueDate(Timestamp.valueOf(due));
                 t.setStatus("unpaid");
                 t.setApartmentId(a);
                 t.setCategoryId(c);
@@ -123,12 +123,6 @@ public class TransactionServiceImpl implements TransactionService {
             }
         }
         return result;
-    }
-
-    // Lấy các transaction
-    @Override
-    public List<Transaction> getTransactionsByAdmin(Map<String, String> params) {
-        return transactionRepository.getTransactions(params);
     }
 
     @Autowired
@@ -190,8 +184,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction updateTransactionStatus(String transactionId) {
-        if (transactionId == null) {
+    public Transaction updateTransactionStatus(String transactionId, String status) {
+        if (transactionId == null || status == null) {
             throw new IllegalArgumentException("Transaction ID hoặc Status không được null!");
         }
 
@@ -200,9 +194,51 @@ public class TransactionServiceImpl implements TransactionService {
             throw new IllegalArgumentException("Không tìm thấy transaction với ID: " + transactionId);
         }
 
-        t.setStatus("completed");
+        t.setStatus(status);
         t.setUpdatedDate(new Date());
         return transactionRepository.updateTransaction(t);
     }
 
+    @Override
+    public List<Transaction> getTransactionsByApartment(String apartmentId, Map<String, String> params) {
+        String userId = params.get("userId");
+
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Thiếu userId!");
+        }
+
+        if (apartmentId == null || apartmentId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Thiếu apartmentId!");
+        }
+
+        Apartment apartment = apartmentRepo.getApartmentById(apartmentId);
+        if (apartment == null) {
+            throw new IllegalArgumentException("Căn hộ không tồn tại!");
+        }
+        User owner = apartment.getCurrentOwnerId();
+        String ownerId = owner.getId();
+        if ((userId.equals(ownerId))) {
+            Map<String, String> newParams = new HashMap<>();
+            newParams.put("apartmentId", apartmentId);
+
+            return transactionRepository.getTransactions(newParams);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<Transaction> getTransactions(Map<String, String> params) {
+        String userId = params.get("userId");
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Thiếu userId!");
+        }
+        return transactionRepository.getTransactions(params);
+    }
+
+    // Lấy các transaction
+    @Override
+    public List<Transaction> getTransactionsByAdmin(Map<String, String> params) {
+        return transactionRepository.getTransactions(params);
+    }
 }

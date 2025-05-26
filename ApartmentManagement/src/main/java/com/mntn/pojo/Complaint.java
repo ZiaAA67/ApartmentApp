@@ -4,6 +4,7 @@
  */
 package com.mntn.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.Basic;
@@ -45,6 +46,7 @@ public class Complaint implements Serializable {
     @Lob
     @Column(name = "content")
     private String content;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name = "date_submitted")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateSubmitted;
