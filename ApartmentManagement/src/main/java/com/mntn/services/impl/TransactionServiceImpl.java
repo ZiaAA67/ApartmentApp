@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service("transactionService")
@@ -72,7 +73,7 @@ public class TransactionServiceImpl implements TransactionService {
         String returnURL = "http://localhost:3000/pay-transactions";
         String notifyURL = "http://localhost:8080/ApartmentManagement/api/momo/callback";
         String orderInfo = "Giao dịch " + transaction.getCategoryId().getName();
-        
+
         long amountLong = amount.setScale(0, BigDecimal.ROUND_DOWN).longValue();
         try {
             PaymentResponse paymentResponse = createOrderMomo.process(
@@ -187,4 +188,21 @@ public class TransactionServiceImpl implements TransactionService {
 
         return null;
     }
+
+    @Override
+    public Transaction updateTransactionStatus(String transactionId) {
+        if (transactionId == null) {
+            throw new IllegalArgumentException("Transaction ID hoặc Status không được null!");
+        }
+
+        Transaction t = transactionRepository.getTransactionById(transactionId);
+        if (t == null) {
+            throw new IllegalArgumentException("Không tìm thấy transaction với ID: " + transactionId);
+        }
+
+        t.setStatus("completed");
+        t.setUpdatedDate(new Date());
+        return transactionRepository.updateTransaction(t);
+    }
+
 }

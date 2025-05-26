@@ -13,12 +13,13 @@ public interface TransactionService {
 
     List<Transaction> getTransactionsByAdmin(Map<String, String> params);
 
-    PaymentResponse payTransaction(String transactionId) throws RuntimeException;
-
     List<Transaction> createTransactions(List<TransactionDTO> dataList);
 
     Transaction updateTransactionImage(String transactionId, Map<String, String> updates, MultipartFile momoImage);
 
+    Transaction updateTransactionStatus(String transactionId);
+
     Transaction processMomoIPN(Map<String, String> payload);
 
+    PaymentResponse payTransaction(String transactionId) throws RuntimeException;
 }
