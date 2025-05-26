@@ -8,4 +8,5 @@ import java.util.Map;
 public interface SurveyResponseService {
     SurveyResponse createResponse(String surveyId, String optionId, Map<String, String> params);
     List<SurveyResponse> getListResponse(String surveyId, String optionId);
+    List<SurveyResponse> getUserResponse(String userId);
 }

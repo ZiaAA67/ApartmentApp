@@ -43,4 +43,9 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     public List<SurveyResponse> getListResponse(String surveyId, String optionId) {
         return this.resRepo.getListResponse(surveyId, optionId);
     }
+
+    @Override
+    public List<SurveyResponse> getUserResponse(String userId) {
+        return this.resRepo.getUserResponse(userId);
+    }
 }

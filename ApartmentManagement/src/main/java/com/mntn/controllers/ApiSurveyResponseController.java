@@ -18,6 +18,11 @@ public class ApiSurveyResponseController {
     @Autowired
     private SurveyResponseService resService;
 
+    @GetMapping("/secure/users/{userId}/response")
+    public ResponseEntity<List<SurveyResponse>> getUserResponse(@PathVariable(value = "userId") String userId) {
+        return new ResponseEntity<>(this.resService.getUserResponse(userId), HttpStatus.OK);
+    }
+
     @GetMapping("/secure/survey/{surveyId}/option/{optionId}/response")
     public ResponseEntity<List<SurveyResponse>> getListSurveyOption(@PathVariable(value = "surveyId") String surveyId,
                                                                     @PathVariable(value = "optionId") String optionId) {

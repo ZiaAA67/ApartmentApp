@@ -6,6 +6,8 @@ import com.mntn.pagination.PaginatedResponse;
 import com.mntn.pojo.User;
 import com.mntn.repositories.UserRepository;
 import com.mntn.services.UserService;
+import com.mntn.utils.EmailUtil;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
@@ -82,7 +84,16 @@ public class UserServiceImpl implements UserService {
         u.setUsername(username);
         u.setIdentityNumber(params.get("identityNumber"));
         u.setPhone(phone);
-        u.setPassword(this.passwordEncoder.encode(params.get("password")));
+//        u.setPassword(this.passwordEncoder.encode(params.get("password")));
+
+        String password = UUID.randomUUID().toString();
+        try {
+            EmailUtil.sendEmail(email, "Day la mat khau cua ban", password);
+        } catch (MessagingException e) {
+            throw new IllegalArgumentException(e);
+        }
+        u.setPassword(this.passwordEncoder.encode(password));
+
         u.setIsActive(true);
         u.setIsFirstLogin(true);
 
@@ -123,6 +134,8 @@ public class UserServiceImpl implements UserService {
             } catch (IOException ex) {
                 Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else {
+            u.setAvatar("https://res.cloudinary.com/dbmwgavqz/image/upload/v1748252972/avt_vvnc8k.jpg");
         }
 
         u.setCreatedDate(new Date());

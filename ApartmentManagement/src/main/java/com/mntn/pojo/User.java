@@ -73,7 +73,6 @@ public class User implements Serializable {
     @Column(name = "birth")
     @Temporal(TemporalType.DATE)
     private Date birth;
-    @Basic(optional = false)
     @Column(name = "identity_number")
     private String identityNumber;
     @Column(name = "email")
