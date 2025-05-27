@@ -14,7 +14,8 @@ public class DispatcherSevletInit extends AbstractAnnotationConfigDispatcherServ
             ThymeleafConfigs.class,
             HibernateConfigs.class,
             SpringSecurityConfigs.class,
-            MomoConfigs.class,};
+            MomoConfigs.class,
+            FirebaseConfig.class};
     }
 
     @Override
