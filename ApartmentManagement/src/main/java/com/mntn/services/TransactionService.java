@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface TransactionService {
 
     List<Transaction> getTransactions(Map<String, String> params);
+    
+    List<Transaction> getTransactionsByApartment(String apartmentId, Map<String, String> params);
 
     List<Transaction> getTransactionsByAdmin(Map<String, String> params);
 
@@ -17,7 +19,7 @@ public interface TransactionService {
 
     Transaction updateTransactionImage(String transactionId, Map<String, String> updates, MultipartFile momoImage);
 
-    Transaction updateTransactionStatus(String transactionId);
+    Transaction updateTransactionStatus(String transactionId, String status);
 
     Transaction processMomoIPN(Map<String, String> payload);
 

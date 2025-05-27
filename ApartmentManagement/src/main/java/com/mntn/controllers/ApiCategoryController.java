@@ -3,7 +3,6 @@ package com.mntn.controllers;
 import com.mntn.pojo.Category;
 import com.mntn.services.CategoryService;
 import java.util.List;
-import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
