@@ -13,7 +13,6 @@ import com.mntn.pojo.momo.PaymentResponse;
 import com.mntn.repositories.ApartmentRepository;
 import com.mntn.repositories.CategoryRepository;
 import com.mntn.repositories.TransactionRepository;
-import com.mntn.repositories.UserRepository;
 import com.mntn.services.TransactionService;
 import com.mntn.utils.momo.LogUtils;
 import java.io.IOException;
@@ -67,7 +66,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         String returnURL = "http://localhost:3000/pay-transactions";
-        String notifyURL = "http://localhost:8080/ApartmentManagement/api/momo/callback";
+        String notifyURL = "https://840b-2405-4802-8136-2de0-916a-ff07-97ff-fd0c.ngrok-free.app/ApartmentManagement/api/momo/callback";
         String orderInfo = "Giao dịch " + transaction.getCategoryId().getName();
 
         long amountLong = amount.setScale(0, BigDecimal.ROUND_DOWN).longValue();
@@ -89,41 +88,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private CategoryRepository categoryRepo;
-
-    LocalDateTime now = LocalDateTime.now();
-    LocalDateTime due = now.plusMonths(1);
-
-    // Tạo các transactions
-    @Override
-    public List<Transaction> createTransactions(List<TransactionDTO> dataList) {
-        List<Transaction> result = new ArrayList<>();
-
-        for (TransactionDTO dto : dataList) {
-            BigDecimal amount = dto.getAmount();
-            String apartmentId = dto.getApartmentId();
-            String categoryId = dto.getCategoryId();
-
-            Apartment a = apartmentRepo.getApartmentById(apartmentId);
-            Category c = categoryRepo.findById(categoryId);
-
-            if (a != null && c != null) {
-                Transaction t = new Transaction();
-                t.setId(UUID.randomUUID().toString());
-                t.setAmount(amount);
-                t.setCreatedDate(new Date());
-                t.setDueDate(Timestamp.valueOf(due));
-                t.setStatus("unpaid");
-                t.setApartmentId(a);
-                t.setCategoryId(c);
-                t.setUserId(null);
-                t.setMethodId(null);
-                t.setImage(null);
-
-                result.add(transactionRepository.addTransaction(t));
-            }
-        }
-        return result;
-    }
 
     @Autowired
     private Cloudinary cloudinary;
@@ -229,16 +193,41 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> getTransactions(Map<String, String> params) {
-        String userId = params.get("userId");
-        if (userId == null || userId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Thiếu userId!");
-        }
         return transactionRepository.getTransactions(params);
     }
 
-    // Lấy các transaction
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime due = now.plusMonths(1);
+
+    // Tạo các transactions
     @Override
-    public List<Transaction> getTransactionsByAdmin(Map<String, String> params) {
-        return transactionRepository.getTransactions(params);
+    public List<Transaction> createTransactions(List<TransactionDTO> dataList) {
+        List<Transaction> result = new ArrayList<>();
+
+        for (TransactionDTO dto : dataList) {
+            BigDecimal amount = dto.getAmount();
+            String apartmentId = dto.getApartmentId();
+            String categoryId = dto.getCategoryId();
+
+            Apartment a = apartmentRepo.getApartmentById(apartmentId);
+            Category c = categoryRepo.findById(categoryId);
+
+            if (a != null && c != null) {
+                Transaction t = new Transaction();
+                t.setId(UUID.randomUUID().toString());
+                t.setAmount(amount);
+                t.setCreatedDate(new Date());
+                t.setDueDate(Timestamp.valueOf(due));
+                t.setStatus("unpaid");
+                t.setApartmentId(a);
+                t.setCategoryId(c);
+                t.setUserId(null);
+                t.setMethodId(null);
+                t.setImage(null);
+
+                result.add(transactionRepository.addTransaction(t));
+            }
+        }
+        return result;
     }
 }

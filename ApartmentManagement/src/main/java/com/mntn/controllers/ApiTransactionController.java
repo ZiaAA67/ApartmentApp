@@ -31,29 +31,17 @@ public class ApiTransactionController {
     @GetMapping("/secure/transactions")
     public ResponseEntity<?> getTransactions(@RequestParam Map<String, String> params) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn chưa đăng nhập!");
-        }
-
         String username = auth.getName();
         User user = userService.getUserByUsername(username);
         params.put("userId", String.valueOf(user.getId()));
-
-        try {
-            List<Transaction> transactions = transactionService.getTransactions(params);
-            return ResponseEntity.ok(transactions);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return ResponseEntity.status(500).body("Server Error: " + ex.getMessage());
-        }
+        return ResponseEntity.ok(this.transactionService.getTransactions(params));
     }
 
     // Lấy unpaid
     @GetMapping("/secure/admin/transactions")
     public ResponseEntity<?> getTransactionsByAdmin(@RequestParam Map<String, String> params) {
         try {
-            List<Transaction> transactions = transactionService.getTransactionsByAdmin(params);
+            List<Transaction> transactions = transactionService.getTransactions(params);
             return ResponseEntity.ok(transactions);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -74,8 +62,7 @@ public class ApiTransactionController {
         }
     }
 
-    // Tạo transaction
-    @PostMapping("/secure/transactions/create-multiple")
+    @PostMapping("/secure/admin/transactions/create-multiple")
     public ResponseEntity<?> createMultipleTransactions(@RequestBody List<TransactionDTO> data) {
         try {
             List<Transaction> created = transactionService.createTransactions(data);
@@ -87,7 +74,7 @@ public class ApiTransactionController {
     }
 
     // Xử lí upload img momo - update trans
-    @PatchMapping(path = "/secure/pay-img/transactions/{transactionId}", consumes = MediaType.MULTIPART_FORM_DATA)
+    @PatchMapping(path = "/secure/transactions/pay-img/{transactionId}", consumes = MediaType.MULTIPART_FORM_DATA)
     public ResponseEntity<?> updateTransaction(@PathVariable("transactionId") String transactionId,
             @RequestParam Map<String, String> updates,
             @RequestParam(value = "momoImage", required = false) MultipartFile momoImage) {
@@ -126,11 +113,6 @@ public class ApiTransactionController {
     public ResponseEntity<?> getTransactionsByApartment(@PathVariable("apartmentId") String apartmentId,
             @RequestParam Map<String, String> params) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null || !auth.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn chưa đăng nhập!");
-        }
-
         String username = auth.getName();
         User user = userService.getUserByUsername(username);
         params.put("userId", String.valueOf(user.getId()));

@@ -13,8 +13,6 @@ public interface TransactionService {
     
     List<Transaction> getTransactionsByApartment(String apartmentId, Map<String, String> params);
 
-    List<Transaction> getTransactionsByAdmin(Map<String, String> params);
-
     List<Transaction> createTransactions(List<TransactionDTO> dataList);
 
     Transaction updateTransactionImage(String transactionId, Map<String, String> updates, MultipartFile momoImage);
