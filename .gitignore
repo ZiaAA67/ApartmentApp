@@ -1,6 +1,8 @@
 # Compiled class file
 *.class
 
+firebase-service-account-key.json
+
 # Log file
 *.log
 
