@@ -4,6 +4,7 @@
  */
 package com.mntn.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.Basic;
@@ -45,9 +46,11 @@ public class Delivery implements Serializable {
     @Lob
     @Column(name = "package_description")
     private String packageDescription;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name = "arrived_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date arrivedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name = "delivered_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deliveredAt;
@@ -162,5 +165,5 @@ public class Delivery implements Serializable {
     public String toString() {
         return "com.mntn.pojo.Delivery[ id=" + id + " ]";
     }
-    
+
 }
