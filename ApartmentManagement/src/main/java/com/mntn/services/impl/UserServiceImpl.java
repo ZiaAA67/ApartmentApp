@@ -114,10 +114,10 @@ public class UserServiceImpl implements UserService {
         String birth = params.get("birth");
         if (birth != null && !birth.isEmpty()) {
             try {
-                Date birthDate = new SimpleDateFormat("dd-MM-yyyy").parse(birth);
+                Date birthDate = new SimpleDateFormat("yyyy-MM-dd").parse(birth);
                 u.setBirth(birthDate);
             } catch (ParseException e) {
-                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, "Birth format must be (dd-MM-yyyy)");
+                Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, "Ngày sinh phải đúng định dạng (yyyy-MM-dd)");
             }
         }
 
@@ -151,10 +151,22 @@ public class UserServiceImpl implements UserService {
             updates.forEach((field, value) -> {
                 switch (field) {
                     case "isActive" -> u.setIsActive(Boolean.parseBoolean(value));
+                    case "isFirstLogin" -> u.setIsFirstLogin(Boolean.parseBoolean(value));
                     case "firstName" -> u.setFirstName(value);
                     case "lastName" -> u.setLastName(value);
                     case "email" -> u.setEmail(value);
                     case "phone" -> u.setPhone(value);
+                    case "gender" -> u.setGender(Short.valueOf(value));
+                    case "birth" -> {
+                        try {
+                            Date birthDate = new SimpleDateFormat("yyyy-MM-dd").parse(value);
+                            u.setBirth(birthDate);
+                        } catch (ParseException e) {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ngày sinh phải đúng định dạng (yyyy-MM-dd)");
+                        }
+                    }
+                    case "address" -> u.setAddress(value);
+                    case "identityNumber" -> u.setIdentityNumber(value);
                     case "password" -> u.setPassword(passwordEncoder.encode(value));
                 }
             });

@@ -70,7 +70,7 @@ public class VehicleAccessServiceIpml implements VehicleAccessService {
             v.setAccessTime(Date.from(time.toInstant()));
         } else {
             Instant now = Instant.now();
-            Instant time = now.plus(1, ChronoUnit.DAYS);
+            Instant time = now.plus(3, ChronoUnit.DAYS);
             v.setAccessTime(Date.from(time));
         }
 

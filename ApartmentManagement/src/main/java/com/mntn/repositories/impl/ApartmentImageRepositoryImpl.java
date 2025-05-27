@@ -28,7 +28,8 @@ public class ApartmentImageRepositoryImpl implements ApartmentImageRepository {
     @Override
     public List<ApartmentImage> getListImages(String aptId) {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("FROM ApartmentImage", ApartmentImage.class);
+        Query q = s.createQuery("FROM ApartmentImage WHERE apartmentId = :aptId", ApartmentImage.class);
+        q.setParameter("aptId", aptId);
         return q.getResultList();
     }
 }
